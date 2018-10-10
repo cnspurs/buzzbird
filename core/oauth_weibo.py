@@ -35,8 +35,3 @@ class OAuthWeibo:
             return str(uid)
 
         raise ValueError(r.text)
-
-
-if __name__ == '__main__':
-    access_token = weibo.get_access_token('b87082b60101f90a0f8c2deb896b8c63')
-    print(weibo.get_uid(access_token))
