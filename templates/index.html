@@ -1,0 +1,27 @@
+{% load static %}
+<html>
+<head>
+  <link rel="stylesheet" href="{% static "css/index.css" %}">
+</head>
+<body>
+<div class="App">
+  <header class="App-header">
+    <p>
+      热刺嗡嗡鸟
+    </p>
+    {% if request.user.is_authenticated == False %}
+      <a href="https://api.weibo.com/oauth2/authorize?response_type=code&client_id=3542800494&redirect_uri=https://spurssh.com">
+        <img src='http://www.sinaimg.cn/blog/developer/wiki/240.png' alt="logo"/>
+      </a>
+    {% else %}
+      <p>
+        已登录
+      </p>
+      <a href="{% url 'logout' %}">
+        <button>登出</button>
+      </a>
+    {% endif %}
+  </header>
+</div>
+</body>
+</html>

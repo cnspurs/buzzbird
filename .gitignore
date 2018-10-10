@@ -1,0 +1,9 @@
+.idea
+*.pyc
+db.sqlite3
+.DS_Store
+.ipynb_checkpoints/
+__pycache__/
+article_images/
+dump.rdb
+.python-version
