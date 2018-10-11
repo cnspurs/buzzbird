@@ -26,7 +26,7 @@ SECRET_KEY = 'voc2qq6&#)(!+b%d+4*5hgvjsyj!)xfs#c%*mj90pvrf2kcre1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['buzzbird.cnspurs.com']
 
 
 # Application definition
