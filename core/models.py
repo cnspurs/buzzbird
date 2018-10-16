@@ -9,6 +9,10 @@ class Profile(models.Model):
     access_token = models.CharField('Access Token', max_length=64)
     access_token_expired_at = models.DateTimeField('Access Token 过期时间', null=True)
 
+    def __str__(self):
+        return f'user={self.user.username if self.user else None}, access_token={self.access_token}, ' \
+               f'expired_at={self.access_token_expired_at.strftime() if self.access_token_expired_at else None}'
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
