@@ -7,8 +7,12 @@ name = "pypi"
 requests = "*"
 python-twitter = "*"
 django = "*"
+requests-toolbelt = "*"
+pillow = "*"
+"psycopg2-binary" = "*"
 
 [dev-packages]
+ptpython = "*"
 
 [requires]
 python_version = "3.7"
