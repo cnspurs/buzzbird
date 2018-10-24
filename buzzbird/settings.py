@@ -38,8 +38,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_q',
     'core',
 ]
+
+Q_CLUSTER = {
+    'name': 'DjangORM',
+    'workers': 1,
+    'retry': 120,
+    'catch_up': False,
+    'orm': 'default'
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

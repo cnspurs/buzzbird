@@ -10,6 +10,8 @@ django = "*"
 requests-toolbelt = "*"
 pillow = "*"
 "psycopg2-binary" = "*"
+gunicorn = "*"
+django-q = "*"
 
 [dev-packages]
 ptpython = "*"
