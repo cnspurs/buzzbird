@@ -25,7 +25,7 @@ class TwitterMember(models.Model):
 
 class Settings(models.Model):
     key = models.CharField(max_length=16, primary_key=True)
-    value = models.CharField(max_length=255)
+    value = models.CharField(max_length=255, null=True)
 
     @classmethod
     def last_tweet_id(cls):
