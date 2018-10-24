@@ -1,0 +1,40 @@
+version: '3.3'
+
+services:
+  db:
+    env_file:
+      - .env
+    image: postgres:latest
+    restart: always
+    hostname: db
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_USER=${DATABASE_USERNAME}
+      - POSTGRES_DB=${DATABASE_DBNAME}
+    healthcheck:
+      test: exit 0
+
+  app:
+    env_file:
+      - .env
+    restart: always
+    ports:
+      - 3000:3000
+    expose:
+      - 3000
+    build: .
+    hostname: app
+    depends_on:
+      - db
+    command: bash app.sh
+
+  worker:
+    env_file:
+      - .env
+    restart: always
+    build: .
+    depends_on:
+      - app
+    command: python3 manage.py qcluster
