@@ -1,3 +1,5 @@
+import datetime as dt
+
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.contrib.auth import login
@@ -18,11 +20,16 @@ def oauth(request):
     code = request.GET.get('code')
 
     if code:
-        access_token = weibo.get_access_token(code)
+        data = weibo.get_access_token(code)
+        access_token = data['access_token']
+        expires_in = data['expires_in']
+
         weibo_uid = weibo.get_uid(access_token)
 
         user = User.objects.filter(username=weibo_uid).first()
         if user:
+            user.profile.access_token = access_token
+            user.profile.access_token_expired_at = timezone.now() + dt.timedelta(seconds=expires_in)
             login(request, user)
             return redirect('/')
 
@@ -30,7 +37,7 @@ def oauth(request):
             user = User.objects.create_user(weibo_uid)
             user.set_unusable_password()
             user.profile.access_token = access_token
-            user.profile.access_token_expired_at = timezone.now()
+            user.profile.access_token_expired_at = timezone.now() + dt.timedelta(seconds=expires_in)
             user.profile.weibo_uid = weibo_uid
             user.save()
 

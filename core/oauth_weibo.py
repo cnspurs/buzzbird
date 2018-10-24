@@ -20,7 +20,7 @@ class OAuthWeibo:
         r = requests.post(URL)
 
         if 'access_token' in r.json():
-            return r.json()['access_token']
+            return r.json()
 
         raise ValueError(r.text)
 
