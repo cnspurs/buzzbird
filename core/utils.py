@@ -22,6 +22,11 @@ class TwitterAPI:
 
         return [Status(status) for status in timeline]
 
+    def get_list_members(self, list_id=77158478, **kwargs):
+        members = self._api.GetListMembers(list_id, **kwargs)
+
+        return members
+
 
 class Status:
 
