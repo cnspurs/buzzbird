@@ -17,6 +17,22 @@ class Profile(models.Model):
         return True
 
 
+class TwitterMember(models.Model):
+    twitter_id = models.CharField('用户推特 ID', max_length=128, unique=True)
+    english_name = models.CharField('英文名', max_length=64)
+    chinese_name = models.CharField('中文译名', max_length=16, null=True)
+
+
+class Settings(models.Model):
+    key = models.CharField(max_length=16, primary_key=True)
+    value = models.CharField(max_length=255)
+
+    @classmethod
+    def last_tweet_id(cls):
+        last_tweet_id, _ = cls.objects.get_or_create(key='last_tweet_id')
+        return last_tweet_id
+
+
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
