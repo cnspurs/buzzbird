@@ -13,7 +13,7 @@ def sync():
 
     last_tweet_id = Settings.last_tweet_id()
 
-    timeline = twitter.get_timeline(since_id=last_tweet_id)
+    timeline = twitter.get_timeline(since_id=last_tweet_id.value)
     timeline.reverse()
 
     oauth_weibo = settings.WEIBO
