@@ -1,4 +1,7 @@
 import requests
+from requests_toolbelt import MultipartEncoder
+
+from core.schema import Weibo
 
 HAHA = 'https://api.weibo.com/oauth2/authorize?response_type=code&client_id=3542800494&redirect_uri=https://spurssh.com'
 
@@ -35,3 +38,23 @@ class OAuthWeibo:
             return str(uid)
 
         raise ValueError(r.text)
+
+    def post(self, profile, weibo: Weibo):
+        data = {
+            'access_token': profile.access_token,
+            'status': weibo.text,
+        }
+        URL = 'https://api.weibo.com/2/statuses/share.json'
+        if weibo.pic is None:
+            r = requests.post(URL, data=data)
+
+        else:
+            data.update({'pic': ('share.jpg', weibo.pic, 'image/jpeg')})
+            m = MultipartEncoder(fields=data)
+
+            r = requests.post(URL, data=m, headers={'Content-Type': m.content_type})
+
+        if 'created_at' in r.json():
+            return True
+
+        return ValueError(r.text)
