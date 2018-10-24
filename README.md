@@ -1,11 +1,35 @@
-# Environment variables
-## Database
+# buzzbird 🐦
+
+🌟 Sync tweets ➡️ weibo, in an easy way.
+
+## Environment variables
+### Database
+
 `DATABASE_HOSTNAME`
 
-`DATABSE_PORT`
+`DATABASE_PORT`
 
 `DATABASE_USERNAME`
 
 `DATABASE_PASSWORD`
 
 `DATABASE_DBNAME`
+
+### Weibo
+
+`WEIBO_APP_ID`
+
+`WEIBO_APP_SECRET`
+
+`WEIBO_REDIRECT_URI`
+
+### Twitter
+
+`TWITTER_CONSUMER_KEY`
+
+`TWITTER_CONSUMER_SECRET`
+
+`TWITTER_ACCESS_TOKEN_KEY`
+
+`TWITTER_ACCESS_TOKEN_SECRET`
+
