@@ -40,9 +40,17 @@ class Status:
         return self._status.__repr__()
 
     def to_weibo(self):
+        # 原创和转推，text 格式不一样
+        if self.retweet is None:
+            text = f'【{self.screen_name} 推特】{self.text}'
+            image = self.first_image()
+        else:
+            text = f'【{self.screen_name} 推特】{self.text} RT @{self.retweeted_status._status.user.screen_name} {self.retweeted_status.text}'
+            image = self.first_image(retweet=True)
+
         data = {
-            'text': f'【{self.screen_name} 推特】{self.text}',
-            'pic': self.first_image,
+            'text': text,
+            'pic': image,
             'tweet_id': self.tweet_id,
         }
 
@@ -64,12 +72,20 @@ class Status:
     def text(self):
         return self._status.full_text
 
-    @property
-    def first_image(self):
-        if self._status.media is None:
-            return None
+    def first_image(self, retweet=False):
+        image_url = ''
 
-        image_url = self._status.media[0].media_url_https
+        if retweet is False:
+            if self._status.media is None:
+                return None
+
+            image_url = self._status.media[0].media_url_https
+
+        else:
+            if self.retweeted_status._status.media is None:
+                return None
+
+            image_url = self.retweeted_status._status.media[0].media_url_https
 
         r = requests.get(image_url)
         image_data = BytesIO(r.content)
@@ -87,11 +103,31 @@ class Status:
     def username(self):
         return self._status.user.name
 
-
     @property
     def images(self):
         # 反正现在又用不上
         return None
+
+    @property
+    def retweet(self):
+        return self._status.quoted_status or self._status.retweeted_status
+
+    @property
+    def retweeted_status(self):
+        # retweet with comment == quoted_status
+        # retweet with no comment == retweeted_status
+
+        quoted = self._status.quoted_status
+        retweeted = self._status.retweeted_status
+
+        if quoted is None and retweeted is None:
+            return None
+
+        elif quoted:
+            return Status(self._status.quoted_status)
+
+        elif retweeted:
+            return Status(self._status.retweeted_status)
 
 
 twitter = TwitterAPI(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET, tweet_mode='extended')
