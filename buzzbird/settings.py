@@ -58,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
 ]
 
 ROOT_URLCONF = 'buzzbird.urls'
@@ -146,3 +147,11 @@ weibo_app_id = os.getenv('WEIBO_APP_ID')
 weibo_app_secret = os.getenv('WEIBO_APP_SECRET')
 weibo_redirect_uri = os.getenv('WEIBO_REDIRECT_URI')
 WEIBO = OAuthWeibo(weibo_app_id, weibo_app_secret, weibo_redirect_uri)
+
+ROLLBAR = {
+    'access_token': os.getenv('ROLLBAR_ACCESS_TOKEN'),
+    'environment': 'development' if DEBUG else 'production',
+    'root': BASE_DIR,
+}
+import rollbar
+rollbar.init(**ROLLBAR)
