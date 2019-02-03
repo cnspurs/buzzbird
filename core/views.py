@@ -1,3 +1,4 @@
+import logging
 import datetime as dt
 
 from django.shortcuts import redirect
@@ -9,6 +10,7 @@ from django.http import JsonResponse
 from django.conf import settings
 from django.utils import timezone
 
+logger = logging.getLogger('core.views')
 weibo = settings.WEIBO
 
 

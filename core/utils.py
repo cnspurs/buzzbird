@@ -1,3 +1,4 @@
+import logging
 import os
 from io import BytesIO
 
@@ -6,6 +7,8 @@ import twitter as t
 
 from core.models import TwitterMember
 from core.schema import Weibo
+
+logger = logging.getLogger('core.utils')
 
 CONSUMER_KEY = os.getenv('TWITTER_CONSUMER_KEY')
 CONSUMER_SECRET = os.getenv('TWITTER_CONSUMER_SECRET')
@@ -54,6 +57,7 @@ class Status:
             'tweet_id': self.tweet_id,
         }
 
+        logger.info(f'text: {text}, image: {True if image else False}, tweet_id: {self.tweet_id}')
         return Weibo(**data)
 
     @property

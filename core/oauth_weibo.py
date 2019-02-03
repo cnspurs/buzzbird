@@ -1,10 +1,11 @@
+import logging
+
 import requests
 from requests_toolbelt import MultipartEncoder
 
 from core.schema import Weibo
 
-HAHA = 'https://api.weibo.com/oauth2/authorize?response_type=code&client_id=3542800494&redirect_uri=https://spurssh.com'
-
+logger = logging.getLogger('core.oauth_weibo')
 
 class OAuthWeibo:
     def __init__(self, app_id: str = None, app_secret: str = None, redirect_uri: str = None):
@@ -13,11 +14,11 @@ class OAuthWeibo:
         self.redirect_uri = redirect_uri
 
     def get_access_token(self, code: str) -> str:
-        URL = f'https://api.weibo.com/oauth2/access_token?client_id={self.app_id}' \
-              f'&client_secret={self.app_secret}&grant_type=authorization_code' \
-              f'&redirect_uri={self.redirect_uri}&code={code}'
+        url = f'https://api.weibo.com/oauth2/access_token?client_id={self.app_id}' \
+            f'&client_secret={self.app_secret}&grant_type=authorization_code' \
+            f'&redirect_uri={self.redirect_uri}&code={code}'
 
-        r = requests.post(URL)
+        r = requests.post(url)
 
         if 'access_token' in r.json():
             return r.json()
@@ -26,12 +27,12 @@ class OAuthWeibo:
 
     @staticmethod
     def get_uid(access_token: str) -> str:
-        URL = 'https://api.weibo.com/oauth2/get_token_info'
+        url = 'https://api.weibo.com/oauth2/get_token_info'
         data = {
             'access_token': access_token
         }
 
-        r = requests.post(URL, data)
+        r = requests.post(url, data)
 
         if 'uid' in r.json():
             uid = r.json()['uid']
@@ -44,17 +45,19 @@ class OAuthWeibo:
             'access_token': profile.access_token,
             'status': weibo.text,
         }
-        URL = 'https://api.weibo.com/2/statuses/share.json'
+        url = 'https://api.weibo.com/2/statuses/share.json'
         if weibo.pic is None:
-            r = requests.post(URL, data=data)
+            r = requests.post(url, data=data)
 
         else:
             data.update({'pic': ('share.jpg', weibo.pic, 'image/jpeg')})
             m = MultipartEncoder(fields=data)
 
-            r = requests.post(URL, data=m, headers={'Content-Type': m.content_type})
+            r = requests.post(url, data=m, headers={'Content-Type': m.content_type})
 
         if 'created_at' in r.json():
+            logger.info(r.text)
             return True
 
-        return ValueError(r.text)
+        logger.error(f'error: {r.text}, tweet_id: {weibo.tweet_id}')
+        raise ValueError(r.text)
