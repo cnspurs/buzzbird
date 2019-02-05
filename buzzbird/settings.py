@@ -21,13 +21,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'voc2qq6&#)(!+b%d+4*5hgvjsyj!)xfs#c%*mj90pvrf2kcre1'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+if os.getenv('DEBUG') == 'on':
+    DEBUG = True
 
 ALLOWED_HOSTS = ['buzzbird.cnspurs.com']
-
+if DEBUG:
+    ALLOWED_HOSTS += ['127.0.0.1']
 
 # Application definition
 
@@ -122,6 +125,60 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'default': {
+            'format': '{asctime} {levelname} {name}.{funcName} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'default'
+        },
+        'info_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.WatchedFileHandler',
+            'formatter': 'default',
+            'filename': os.path.join(os.getcwd(), 'logs', 'django', 'info.log')
+        },
+        'warning_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.WatchedFileHandler',
+            'formatter': 'default',
+            'filename': os.path.join(os.getcwd(), 'logs', 'django', 'warning.log')
+        },
+        'error_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.WatchedFileHandler',
+            'formatter': 'default',
+            'filename': os.path.join(os.getcwd(), 'logs', 'django', 'error.log')
+        },
+        'critical_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.WatchedFileHandler',
+            'formatter': 'default',
+            'filename': os.path.join(os.getcwd(), 'logs', 'django', 'critical.log')
+        },
+        'debug_file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.WatchedFileHandler',
+            'formatter': 'default',
+            'filename': os.path.join(os.getcwd(), 'logs', 'django', 'debug.log')
+        },
+    },
+    'loggers': {
+        'core': {
+            'handlers': ['info_file', 'warning_file', 'error_file', 'critical_file', 'debug_file'],
+            'level': 'DEBUG',
+        },
+    }
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -153,5 +210,3 @@ ROLLBAR = {
     'environment': 'development' if DEBUG else 'production',
     'root': BASE_DIR,
 }
-import rollbar
-rollbar.init(**ROLLBAR)
