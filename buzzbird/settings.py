@@ -157,25 +157,25 @@ LOGGING = {
             'filename': os.path.join(os.getcwd(), 'logs', 'django', 'info.log')
         },
         'warning_file': {
-            'level': 'INFO',
+            'level': 'WARNING',
             'class': 'logging.handlers.WatchedFileHandler',
             'formatter': 'default',
             'filename': os.path.join(os.getcwd(), 'logs', 'django', 'warning.log')
         },
         'error_file': {
-            'level': 'INFO',
+            'level': 'ERROR',
             'class': 'logging.handlers.WatchedFileHandler',
             'formatter': 'default',
             'filename': os.path.join(os.getcwd(), 'logs', 'django', 'error.log')
         },
         'critical_file': {
-            'level': 'INFO',
+            'level': 'CRITICAL',
             'class': 'logging.handlers.WatchedFileHandler',
             'formatter': 'default',
             'filename': os.path.join(os.getcwd(), 'logs', 'django', 'critical.log')
         },
         'debug_file': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'class': 'logging.handlers.WatchedFileHandler',
             'formatter': 'default',
             'filename': os.path.join(os.getcwd(), 'logs', 'django', 'debug.log')
