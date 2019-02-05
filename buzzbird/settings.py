@@ -139,6 +139,12 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'default'
         },
+        'rollbar': {
+                'filters': ['require_debug_false'],
+                'access_token': os.getenv('ROLLBAR_ACCESS_TOKEN'),
+                'environment': 'production',
+                'class': 'rollbar.logger.RollbarHandler'
+        },
         'info_file': {
             'level': 'INFO',
             'class': 'logging.handlers.WatchedFileHandler',
@@ -172,7 +178,7 @@ LOGGING = {
     },
     'loggers': {
         'core': {
-            'handlers': ['info_file', 'warning_file', 'error_file', 'critical_file', 'debug_file'],
+            'handlers': ['info_file', 'warning_file', 'error_file', 'critical_file', 'debug_file', 'rollbar'],
             'level': 'DEBUG',
         },
     }
