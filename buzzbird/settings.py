@@ -48,8 +48,7 @@ INSTALLED_APPS = [
 Q_CLUSTER = {
     'name': 'DjangORM',
     'workers': 1,
-    'retry': 120,
-    'catch_up': False,
+    'retry': 3600,
     'orm': 'default'
 }
 
