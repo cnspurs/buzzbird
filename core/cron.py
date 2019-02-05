@@ -18,7 +18,6 @@ def sync():
     last_tweet_id = Settings.last_tweet_id()
 
     timeline = twitter.get_timeline(since_id=last_tweet_id.value)
-    logger.info(f'Got timeline, length: {len(timeline)}, last_tweet_id: {last_tweet_id}')
     timeline.reverse()
 
     oauth_weibo = settings.WEIBO
@@ -28,7 +27,7 @@ def sync():
         weibo = tweet.to_weibo()
         result = oauth_weibo.post(profile, weibo)
 
-        if result is True:
+        if result:
             last_tweet_id.value = weibo.tweet_id
             last_tweet_id.save()
             count += 1

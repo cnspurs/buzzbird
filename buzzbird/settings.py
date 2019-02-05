@@ -49,7 +49,8 @@ Q_CLUSTER = {
     'name': 'DjangORM',
     'workers': 1,
     'retry': 3600,
-    'orm': 'default'
+    'orm': 'default',
+    'ack_failures': True,
 }
 
 MIDDLEWARE = [
