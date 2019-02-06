@@ -16,6 +16,7 @@ rollbar = "*"
 
 [dev-packages]
 ptpython = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.7"
