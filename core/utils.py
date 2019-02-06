@@ -52,7 +52,7 @@ class Status:
             image = self.first_image(retweet=True)
 
         data = {
-            'text': text[:140] if len(text) > 140 else text,
+            'text': text,
             'pic': image,
             'tweet_id': self.tweet_id,
         }
@@ -77,7 +77,8 @@ class Status:
 
     @property
     def text(self):
-        return self._status.full_text
+        text = self._status.full_text
+        return text[:136] + '...' if len(text) > 140 else text
 
     def first_image(self, retweet=False):
         image_url = ''
