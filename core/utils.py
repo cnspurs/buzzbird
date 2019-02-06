@@ -62,15 +62,18 @@ class Status:
 
     @property
     def screen_name(self):
-        twitter_member: TwitterMember = TwitterMember.objects.filter(twitter_id=self.twitter_user_id).first()
+        try:
+            twitter_member: TwitterMember = TwitterMember.objects.filter(twitter_id=self.twitter_user_id).first()
 
-        if twitter_member:
-            if twitter_member.chinese_name is not None:
-                return twitter_member.chinese_name
+            if twitter_member:
+                if twitter_member.chinese_name is not None:
+                    return twitter_member.chinese_name
+                return self.username
+
+            TwitterMember.objects.create(twitter_id=self.twitter_user_id, english_name=self.username)
             return self.username
-
-        TwitterMember.objects.create(twitter_id=self.twitter_user_id, english_name=self.username)
-        return self.username
+        except Exception:
+            return self.username
 
     @property
     def text(self):
