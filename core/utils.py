@@ -52,7 +52,7 @@ class Status:
             image = self.first_image(retweet=True)
 
         data = {
-            'text': text,
+            'text': text[:140] if len(text) > 140 else text,
             'pic': image,
             'tweet_id': self.tweet_id,
         }
