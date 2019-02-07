@@ -48,8 +48,9 @@ class Status:
             text = f'【{self.screen_name} 推特】{self.text}'
             image = self.first_image()
         else:
-            text = f'【{self.screen_name} 推特】{self.text} RT @{self.retweeted_status._status.user.screen_name} {self.retweeted_status.text}'
-            image = self.first_image(retweet=True)
+            # text = f'【{self.screen_name} 推特】{self.text} RT @{self.retweeted_status._status.user.screen_name} {self.retweeted_status.text}'
+            # image = self.first_image(retweet=True)
+            return None
 
         data = {
             'text': text if len(text) < 140 else self.text,

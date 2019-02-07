@@ -25,11 +25,12 @@ def sync():
     count = 0
     for tweet in timeline:
         weibo = tweet.to_weibo()
-        result = oauth_weibo.post(profile, weibo)
+        if weibo is not None:
+            result = oauth_weibo.post(profile, weibo)
 
-        if result:
-            last_tweet_id.value = weibo.tweet_id
-            last_tweet_id.save()
-            count += 1
+            if result:
+                last_tweet_id.value = weibo.tweet_id
+                last_tweet_id.save()
+                count += 1
 
     logger.info(f'Cron job finished. Length: {len(timeline)}, sent: {count}')
