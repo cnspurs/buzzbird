@@ -53,7 +53,7 @@ class Status:
             return None
 
         data = {
-            'text': text if len(text) < 140 else self.text,
+            'text': text[125] + '...' + 'https://t.co/diu' if len(text) < 140 else self.text,
             'pic': image,
             'tweet_id': self.tweet_id,
         }
