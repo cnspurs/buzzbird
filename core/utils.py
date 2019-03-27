@@ -52,7 +52,7 @@ class Status:
             # image = self.first_image(retweet=True)
             return None
 
-        text = text if len(text) < 140 else self.text[:125] + '...' + 'https://t.co/diu'
+        text = text if len(text) < 140 else text[:125] + '...' + 'https://t.co/diu'
         if 'https://t.co' not in text:
             text += ' https://t.co/diu'
         data = {
