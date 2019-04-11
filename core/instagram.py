@@ -2,8 +2,8 @@ import io
 import logging
 import re
 
-import dateutil
 import requests
+from dateutil.parser import parse
 from django.conf import settings
 
 from core.models import Instagram, InstagramMember
@@ -48,7 +48,7 @@ def create_user(content):
 
 
 def save_content(user, item):
-    published_at = dateutil.parser.parse(item['pubDate'])
+    published_at = parse(item['pubDate'])
     ig = Instagram.objects.create(author=item['author'], link=item['link'], media_url=item['media:content'],
                                   published_at=published_at, title=item['title'], user=user)
     logger.info(f'Instagram: {ig} saved')
