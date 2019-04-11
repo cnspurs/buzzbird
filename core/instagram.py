@@ -77,8 +77,9 @@ def get_image(url):
 
 
 def ig_to_weibo(ig: Instagram):
+    text = f'【{ig.user.chinese_name} Ins】{ig.title}[:120] + "..." + https://t.co/ins'
     data = {
-        'text': ig.title,
+        'text': text,
         'pic': get_image(ig.media_url),
         'tweet_id': ig.id,
     }
