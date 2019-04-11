@@ -23,6 +23,11 @@ class TwitterMember(models.Model):
     chinese_name = models.CharField('中文译名', max_length=16, null=True)
 
 
+class InstagramMember(models.Model):
+    english_name = models.CharField(max_length=64, primary_key=True)
+    chinese_name = models.CharField(max_length=16)
+
+
 class Settings(models.Model):
     key = models.CharField(max_length=16, primary_key=True)
     value = models.CharField(max_length=255, null=True)
@@ -31,6 +36,20 @@ class Settings(models.Model):
     def last_tweet_id(cls):
         last_tweet_id, _ = cls.objects.get_or_create(key='last_tweet_id')
         return last_tweet_id
+
+
+class Instagram(models.Model):
+    author = models.CharField(max_length=64)
+    collected_at = models.DateTimeField(auto_now_add=True)
+    is_buzzbird = models.BooleanField('Published to buzzbird Weibo?', default=False)
+    media_url = models.URLField()
+    link = models.URLField(db_index=True)
+    published_at = models.DateTimeField()
+    title = models.CharField(blank=True)
+    user = models.ForeignKey('core.InstagramMember', related_name='posts', on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return f'<{self.__class__.__name__}: {self.id}, {self.user.english_name}:{self.title}, {self.published_at}>'
 
 
 @receiver(post_save, sender=User)
