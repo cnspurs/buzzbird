@@ -42,7 +42,7 @@ class Instagram(models.Model):
     author = models.CharField(max_length=64)
     collected_at = models.DateTimeField(auto_now_add=True)
     is_buzzbird = models.BooleanField('Published to buzzbird Weibo?', default=False)
-    media_url = models.URLField()
+    media_url = models.URLField(max_length=1024)
     link = models.URLField(db_index=True)
     published_at = models.DateTimeField()
     title = models.CharField(blank=True, max_length=1024)
