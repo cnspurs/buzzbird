@@ -36,9 +36,9 @@ def get_feed_content(feed):
     return r.json()
 
 
-def create_user(feeds):
-    english_name = feeds['title']
-    chinese_name = feeds['description']
+def create_user(content):
+    english_name = content['title']
+    chinese_name = content['description']
 
     im, _ = InstagramMember.objects.get_or_create(english_name=english_name)
     im.chinese_name = chinese_name
@@ -57,9 +57,9 @@ def save_content(user, item):
 
 def save_contents():
     feeds = get_feeds_list()
-    user = create_user(feeds)
     for feed in feeds:
         content = get_feed_content(feed)
+        user = create_user(content)
         for item in content['items']:
             save_content(user, item)
 
