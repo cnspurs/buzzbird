@@ -221,3 +221,5 @@ ROLLBAR = {
     'environment': 'development' if DEBUG else 'production',
     'root': BASE_DIR,
 }
+
+FETCHRSS_API_KEY = os.getenv('FETCHRSS_API_KEY', 'xxx')
