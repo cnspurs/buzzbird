@@ -45,8 +45,8 @@ class Instagram(models.Model):
     media_url = models.URLField()
     link = models.URLField(db_index=True)
     published_at = models.DateTimeField()
-    title = models.CharField(blank=True)
-    user = models.ForeignKey('core.InstagramMember', related_name='posts', on_delete=models.SET_NULL)
+    title = models.CharField(blank=True, max_length=1024)
+    user = models.ForeignKey('core.InstagramMember', related_name='posts', null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return f'<{self.__class__.__name__}: {self.id}, {self.user.english_name}:{self.title}, {self.published_at}>'
