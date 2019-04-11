@@ -48,8 +48,14 @@ def create_user(content):
 
 
 def save_content(user, item):
+    # if saved, then don't duplicate
+    link = item['link']
+    ig = Instagram.objects.filter(link=link).first()
+    if ig:
+        return ig
+
     published_at = parse(item['pubDate'])
-    ig = Instagram.objects.create(author=item['author'], link=item['link'], media_url=item['media:content'],
+    ig = Instagram.objects.create(author=item['author'], link=link, media_url=item['media:content'],
                                   published_at=published_at, title=item['title'], user=user)
     logger.info(f'Instagram: {ig} saved')
     return ig
