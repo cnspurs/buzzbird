@@ -37,7 +37,7 @@ def sync():
 
 def sync_instagram():
     profile = Profile.objects.filter(user__username='5833511420').first()
-    qs = Instagram.objects.filter(is_buzzbird=False)
+    qs = Instagram.objects.filter(is_buzzbird=False).order_by('published_at')
     for ig in qs:
         weibo = instagram.ig_to_weibo(ig)
         result = oauth_weibo.post(profile, weibo)
