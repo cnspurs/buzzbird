@@ -13,7 +13,7 @@ logger = logging.getLogger('core.instagram')
 
 
 def get_feeds_list():
-    url = f'http://fetchrss.com/api/v1/feed/list?auth={settings.FETCHRSS_API_KEY}'
+    url = f'https://fetchrss.com/api/v1/feed/list?auth={settings.FETCHRSS_API_KEY}'
     r = requests.get(url)
     data = r.json()
 
@@ -31,7 +31,7 @@ def extract_url_id(url):
 def get_feed_content(feed):
     url = feed['rss_url']
     rss_id = extract_url_id(url)
-    url = f'http://fetchrss.com/rss/{rss_id}.json'
+    url = f'https://fetchrss.com/rss/{rss_id}.json'
     r = requests.get(url)
     return r.json()
 
