@@ -60,4 +60,4 @@ class OAuthWeibo:
             return True
 
         logger.error(f'error: {r.text}, tweet_id: {weibo.tweet_id}')
-        raise ValueError(r.text)
+        return False

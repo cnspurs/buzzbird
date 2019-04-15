@@ -1,12 +1,13 @@
 import logging
 
+from core import instagram
+from core.models import Profile, Settings, Instagram
 from core.utils import twitter
-from core.models import Profile
-from core.models import Settings
 
 from django.conf import settings
 
 logger = logging.getLogger('core.cron')
+oauth_weibo = settings.WEIBO
 
 
 def sync():
@@ -20,8 +21,6 @@ def sync():
     timeline = twitter.get_timeline(since_id=last_tweet_id.value)
     timeline.reverse()
 
-    oauth_weibo = settings.WEIBO
-
     count = 0
     for tweet in timeline:
         weibo = tweet.to_weibo()
@@ -34,3 +33,15 @@ def sync():
                 count += 1
 
     logger.info(f'Cron job finished. Length: {len(timeline)}, sent: {count}')
+
+
+def sync_instagram():
+    profile = Profile.objects.filter(user__username='5833511420').first()
+    qs = Instagram.objects.filter(is_buzzbird=False).order_by('published_at')
+    for ig in qs:
+        weibo = instagram.ig_to_weibo(ig)
+        result = oauth_weibo.post(profile, weibo)
+        if result:
+            ig.is_buzzbird = True
+            ig.save()
+            logger.info(f'Instagram: synced {ig.author}: {ig.title}')
