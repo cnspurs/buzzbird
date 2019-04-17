@@ -98,5 +98,9 @@ def send_to_discourse_as_post(ig: Instagram):
     }
 
     r = requests.post('https://discourse.cnspurs.com/posts.json', data=data)
-    if r.status_code != 200:
+    if r.status_code == 200:
         logger.info(r.text)
+        return True
+    else:
+        logger.error(f'Error while sending Instagram {ig.id}: {r.text}')
+        return False
