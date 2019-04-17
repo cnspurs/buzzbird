@@ -223,3 +223,5 @@ ROLLBAR = {
 }
 
 FETCHRSS_API_KEY = os.getenv('FETCHRSS_API_KEY', 'xxx')
+
+DISCOURSE_API_KEY = os.getenv('DISCOURSE_API_KEY')

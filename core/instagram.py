@@ -84,3 +84,19 @@ def ig_to_weibo(ig: Instagram):
         'tweet_id': ig.id,
     }
     return Weibo(**data)
+
+
+def send_to_discourse_as_post(ig: Instagram):
+
+    data = {
+        'api_username': 'SpursBuzzbird',
+        'api_key': settings.DISCOURSE_API_KEY,
+        'topic_id': 7569,
+        'raw': f'【{ig.user.chinese_name} Ins】' + '\n'
+               + 'ig.title' + '\n'
+               + f'<img src="{ig.media_url}">'
+    }
+
+    r = requests.post('https://discourse.cnspurs.com/posts.json', data=data)
+    if r.status_code != 200:
+        logger.info(r.text)
