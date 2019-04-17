@@ -41,6 +41,7 @@ def sync_instagram():
     for ig in qs:
         weibo = instagram.ig_to_weibo(ig)
         result = oauth_weibo.post(profile, weibo)
+        instagram.send_to_discourse_as_post(ig)
         if result:
             ig.is_buzzbird = True
             ig.save()
