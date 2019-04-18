@@ -54,8 +54,10 @@ def sync_instagram_to_weibo():
 
 
 def sync_instagram_to_discourse():
-    qs = Instagram.objects.filter(is_discourse=False)\
-        .filter(published_at__gte=datetime.date.today()).order_by('published_at')
+    qs = Instagram.objects \
+        .filter(is_discourse=False) \
+        .filter(published_at__gte=datetime.datetime.now() - datetime.timedelta(days=1)) \
+        .order_by('published_at')
     for ig in qs:
         result = instagram.send_to_discourse_as_post(ig)
         if result:
