@@ -94,7 +94,7 @@ def send_to_discourse_as_post(ig: Instagram):
         'topic_id': 7569,
         'raw': f'【{ig.user.chinese_name} Ins】' + '\n'
                + 'ig.title' + '\n'
-               + f'<img src="{ig.media_url}">'
+               + ig.link
     }
 
     r = requests.post('https://discourse.cnspurs.com/posts.json', data=data)
