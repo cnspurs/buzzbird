@@ -50,7 +50,8 @@ class Instagram(models.Model):
     user = models.ForeignKey('core.InstagramMember', related_name='posts', null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
-        return f'<{self.__class__.__name__}: {self.id}, {self.user.english_name}:{self.title}, {self.published_at}>'
+        return f'<{self.__class__.__name__}: {self.id}, {self.user.english_name}:{self.title}, {self.published_at},' \
+               f'is_buzzbird: {self.is_buzzbird}, is_discourse: {self.is_discourse}>'
 
 
 @receiver(post_save, sender=User)
