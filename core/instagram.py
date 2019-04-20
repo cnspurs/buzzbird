@@ -93,7 +93,7 @@ def send_to_discourse_as_post(ig: Instagram):
         'api_key': settings.DISCOURSE_API_KEY,
         'topic_id': 7569,
         'raw': f'【{ig.user.chinese_name} Ins】' + '\n'
-               + 'ig.title' + '\n'
+               + ig.title + '\n'
                + ig.link
     }
 
