@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
@@ -45,12 +46,25 @@ class Instagram(models.Model):
     is_discourse = models.BooleanField('Published to discourse?', default=False)
     media_url = models.URLField(max_length=1024)
     link = models.URLField(db_index=True)
-    published_at = models.DateTimeField()
+    created_at = models.DateTimeField()
     title = models.CharField(blank=True, max_length=1024)
     user = models.ForeignKey('core.InstagramMember', related_name='posts', null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
-        return f'<{self.__class__.__name__}: {self.id}, {self.user.english_name}:{self.title}, {self.published_at}>'
+        return f'<{self.__class__.__name__}: {self.id}, {self.user.english_name}:{self.title}, {self.created_at},' \
+               f'is_buzzbird: {self.is_buzzbird}, is_discourse: {self.is_discourse}>'
+
+
+class Twitter(models.Model):
+    collected_at = models.DateTimeField(auto_now_add=True)
+    is_buzzbird = models.BooleanField('Published to buzzbird Weibo?', default=False)
+    is_discourse = models.BooleanField('Published to discourse?', default=False)
+    media_url = models.URLField(max_length=1024)
+    link = models.URLField(max_length=1024)
+    created_at = models.DateTimeField('Published on Twitter at')
+    title = models.CharField(blank=True, max_length=1024)
+    user = models.ForeignKey('core.TwitterMember', related_name='posts', null=True, on_delete=models.SET_NULL)
+    metadata = JSONField()
 
 
 @receiver(post_save, sender=User)

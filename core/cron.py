@@ -1,5 +1,6 @@
 import logging
-import datetime
+import random
+import time
 
 from core import instagram
 from core.models import Profile, Settings, Instagram
@@ -32,6 +33,9 @@ def sync():
                 last_tweet_id.value = weibo.tweet_id
                 last_tweet_id.save()
                 count += 1
+                seconds = random.randint(15, 45)
+                time.sleep(seconds)
+                logger.info(f'Weibo published. Wait for {seconds} seconds')
 
     logger.info(f'Cron job finished. Length: {len(timeline)}, sent: {count}')
 
@@ -43,7 +47,7 @@ def sync_instagram():
 
 def sync_instagram_to_weibo():
     profile = Profile.objects.filter(user__username='5833511420').first()
-    qs = Instagram.objects.filter(is_buzzbird=False).order_by('published_at')
+    qs = Instagram.objects.filter(is_buzzbird=False).order_by('created_at')
     for ig in qs:
         weibo = instagram.ig_to_weibo(ig)
         result = oauth_weibo.post(profile, weibo)
@@ -56,7 +60,7 @@ def sync_instagram_to_weibo():
 def sync_instagram_to_discourse():
     qs = Instagram.objects \
         .filter(is_discourse=False) \
-        .order_by('published_at')
+        .order_by('created_at')
     for ig in qs:
         result = instagram.send_to_discourse_as_post(ig)
         if result:
