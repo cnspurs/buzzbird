@@ -59,5 +59,4 @@ class OAuthWeibo:
             logger.info(r.text)
             return True
 
-        logger.error(f'error: {r.text}, tweet_id: {weibo.tweet_id}')
-        return False
+        logger.error(f'error: {r.text}, weibo.text: {weibo.text}')

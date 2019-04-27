@@ -33,9 +33,9 @@ def sync():
                 last_tweet_id.value = weibo.tweet_id
                 last_tweet_id.save()
                 count += 1
-                seconds = random.randint(15, 45)
-                time.sleep(seconds)
-                logger.info(f'Weibo published. Wait for {seconds} seconds')
+            seconds = random.randint(15, 45)
+            time.sleep(seconds)
+            logger.info(f'Tweets: Published. Sleep {seconds} seconds')
 
     logger.info(f'Cron job finished. Length: {len(timeline)}, sent: {count}')
 
@@ -54,9 +54,10 @@ def sync_instagram_to_weibo():
         if result:
             ig.is_buzzbird = True
             ig.save()
-            seconds = random.randint(15, 45)
-            time.sleep(seconds)
-            logger.info(f'Instagram: synced {ig.author}: {ig.title}, sleep {seconds} seconds.')
+            logger.info(f'Instagram: synced {ig.author}: {ig.title}.')
+        seconds = random.randint(15, 45)
+        time.sleep(seconds)
+        logger.info(f'Published. Sleep {seconds} seconds.')
 
 
 def sync_instagram_to_discourse():
