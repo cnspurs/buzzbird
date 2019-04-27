@@ -54,7 +54,9 @@ def sync_instagram_to_weibo():
         if result:
             ig.is_buzzbird = True
             ig.save()
-            logger.info(f'Instagram: synced {ig.author}: {ig.title}')
+            seconds = random.randint(15, 45)
+            time.sleep(seconds)
+            logger.info(f'Instagram: synced {ig.author}: {ig.title}, sleep {seconds} seconds.')
 
 
 def sync_instagram_to_discourse():
