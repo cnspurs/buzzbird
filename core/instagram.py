@@ -54,9 +54,9 @@ def save_content(user, item):
     if ig:
         return ig
 
-    published_at = parse(item['pubDate'])
+    created_at = parse(item['pubDate'])
     ig = Instagram.objects.create(author=item['author'], link=link, media_url=item['media:content'],
-                                  published_at=published_at, title=item['title'], user=user)
+                                  created_at=created_at, title=item['title'], user=user)
     logger.info(f'Instagram: {ig} saved')
     return ig
 
