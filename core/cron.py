@@ -47,7 +47,7 @@ def sync_instagram():
 
 def sync_instagram_to_weibo():
     profile = Profile.objects.filter(user__username='5833511420').first()
-    qs = Feed.instagram.filter(is_buzzbird=False).order_by('created_at')
+    qs = Feed.objects.instagram().filter(is_buzzbird=False).order_by('created_at')
     for ig in qs:
         weibo = instagram.ig_to_weibo(ig)
         result = oauth_weibo.post(profile, weibo)
@@ -61,7 +61,7 @@ def sync_instagram_to_weibo():
 
 
 def sync_instagram_to_discourse():
-    qs = Feed.instagram \
+    qs = Feed.objects.instagram() \
         .filter(is_discourse=False) \
         .order_by('created_at')
     for ig in qs:

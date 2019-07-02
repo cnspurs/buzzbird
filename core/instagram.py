@@ -50,7 +50,7 @@ def create_user(content):
 def save_content(user, item):
     # if saved, then don't duplicate
     link = item['link']
-    ig = Feed.instagram.filter(link=link).first()
+    ig = Feed.objects.instagram().filter(link=link).first()
     if ig:
         return ig
 
