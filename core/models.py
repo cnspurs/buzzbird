@@ -61,7 +61,7 @@ class Feed(models.Model):
     title = models.CharField(blank=True, max_length=1024)
     user = models.ForeignKey('core.Member', related_name='posts', null=True, on_delete=models.SET_NULL)
     type = models.CharField(max_length=16, choices=FEED_TYPES)
-    metadata = JSONField()
+    metadata = JSONField(null=True)
 
     objects = FeedManager()
 
