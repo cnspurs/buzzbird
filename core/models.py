@@ -32,9 +32,8 @@ class Profile(models.Model):
 
 
 class Member(models.Model):
-    english_name = models.CharField(max_length=64)
+    english_name = models.CharField(max_length=64, primary_key=True)
     chinese_name = models.CharField(max_length=16)
-    type = models.CharField(max_length=16, choices=FEED_TYPES)
     twitter_id = models.CharField(max_length=128, null=True)
 
     objects = FeedManager()

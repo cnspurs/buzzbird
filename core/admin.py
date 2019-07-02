@@ -9,7 +9,7 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Member)
 class MemberAdmin(admin.ModelAdmin):
-    list_display = ('type', 'english_name', 'chinese_name')
+    list_display = ('english_name', 'chinese_name', 'twitter_id')
 
 
 @admin.register(Feed)
