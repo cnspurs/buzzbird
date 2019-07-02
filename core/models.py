@@ -5,6 +5,21 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
 
+FEED_TYPES = [
+    ('instagram', 'Instagram'),
+    ('twitter', 'Twitter'),
+]
+
+
+class InstagramManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(type='instagram')
+
+
+class TwitterManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(type='twitter')
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -21,6 +36,11 @@ class Profile(models.Model):
 class Member(models.Model):
     english_name = models.CharField(max_length=64, primary_key=True)
     chinese_name = models.CharField(max_length=16)
+    type = models.CharField(max_length=16, choices=FEED_TYPES)
+    twitter_id = models.CharField(max_length=128, null=True)
+
+    instagram = InstagramManager()
+    twitter = TwitterManager()
 
 
 class Settings(models.Model):
@@ -33,7 +53,7 @@ class Settings(models.Model):
         return last_tweet_id
 
 
-class Instagram(models.Model):
+class Feed(models.Model):
     author = models.CharField(max_length=64)
     collected_at = models.DateTimeField(auto_now_add=True)
     is_buzzbird = models.BooleanField('Published to buzzbird Weibo?', default=False)
@@ -43,7 +63,11 @@ class Instagram(models.Model):
     created_at = models.DateTimeField()
     title = models.CharField(blank=True, max_length=1024)
     user = models.ForeignKey('core.Member', related_name='posts', null=True, on_delete=models.SET_NULL)
+    type = models.CharField(max_length=16, choices=FEED_TYPES)
     metadata = JSONField()
+
+    instagram = InstagramManager()
+    twitter = TwitterManager()
 
     def __str__(self):
         return f'<{self.__class__.__name__}: {self.id}, {self.user.english_name}:{self.title}, {self.created_at},' \

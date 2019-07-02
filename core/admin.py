@@ -12,6 +12,6 @@ class InstagramMemberAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Instagram)
-class InstagramAdmin(admin.ModelAdmin):
+@admin.register(Feed)
+class FeedAdmin(admin.ModelAdmin):
     pass

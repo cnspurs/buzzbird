@@ -3,7 +3,7 @@ import random
 import time
 
 from core import instagram
-from core.models import Profile, Settings, Instagram
+from core.models import Profile, Settings, Feed
 from core.utils import twitter
 
 from django.conf import settings
@@ -47,7 +47,7 @@ def sync_instagram():
 
 def sync_instagram_to_weibo():
     profile = Profile.objects.filter(user__username='5833511420').first()
-    qs = Instagram.objects.filter(is_buzzbird=False).order_by('created_at')
+    qs = Feed.instagram.filter(is_buzzbird=False).order_by('created_at')
     for ig in qs:
         weibo = instagram.ig_to_weibo(ig)
         result = oauth_weibo.post(profile, weibo)
@@ -61,7 +61,7 @@ def sync_instagram_to_weibo():
 
 
 def sync_instagram_to_discourse():
-    qs = Instagram.objects \
+    qs = Feed.instagram \
         .filter(is_discourse=False) \
         .order_by('created_at')
     for ig in qs:

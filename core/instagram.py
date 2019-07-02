@@ -6,7 +6,7 @@ import requests
 from dateutil.parser import parse
 from django.conf import settings
 
-from core.models import Instagram, InstagramMember
+from core.models import Feed, Member
 from core.schema import Weibo
 
 logger = logging.getLogger('core.instagram')
@@ -40,7 +40,7 @@ def create_user(content):
     english_name = content['title']
     chinese_name = content['description']
 
-    im, _ = InstagramMember.objects.get_or_create(english_name=english_name)
+    im, _ = Member.objects.get_or_create(english_name=english_name, type='instagram')
     im.chinese_name = chinese_name
     im.save()
 
@@ -50,13 +50,13 @@ def create_user(content):
 def save_content(user, item):
     # if saved, then don't duplicate
     link = item['link']
-    ig = Instagram.objects.filter(link=link).first()
+    ig = Feed.instagram.filter(link=link).first()
     if ig:
         return ig
 
     created_at = parse(item['pubDate'])
-    ig = Instagram.objects.create(author=item['author'], link=link, media_url=item['media:content'],
-                                  created_at=created_at, title=item['title'], user=user)
+    ig = Feed.objects.create(author=item['author'], link=link, media_url=item['media:content'],
+                             created_at=created_at, title=item['title'], user=user, type='instagram')
     logger.info(f'Instagram: {ig} saved')
     return ig
 
@@ -76,7 +76,7 @@ def get_image(url):
     return image_data
 
 
-def ig_to_weibo(ig: Instagram):
+def ig_to_weibo(ig: Feed):
     text = f'【{ig.user.chinese_name} Ins】{ig.title[:110]}... https://spursnews.net/weibo/instagrams/{ig.id}'
     data = {
         'text': text,
@@ -86,8 +86,7 @@ def ig_to_weibo(ig: Instagram):
     return Weibo(**data)
 
 
-def send_to_discourse_as_post(ig: Instagram):
-
+def send_to_discourse_as_post(ig: Feed):
     data = {
         'api_username': 'SpursBuzzbird',
         'api_key': settings.DISCOURSE_API_KEY,
