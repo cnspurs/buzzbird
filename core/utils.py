@@ -5,7 +5,7 @@ from io import BytesIO
 import requests
 import twitter as t
 
-from core.models import TwitterMember
+from core.models import Member
 from core.schema import Weibo
 
 logger = logging.getLogger('core.utils')
@@ -67,14 +67,14 @@ class Status:
     @property
     def screen_name(self):
         try:
-            twitter_member: TwitterMember = TwitterMember.objects.filter(twitter_id=self.twitter_user_id).first()
+            twitter_member: Member = Member.objects.filter(twitter_id=self.twitter_user_id, type='twitter').first()
 
             if twitter_member:
                 if twitter_member.chinese_name is not None:
                     return twitter_member.chinese_name
                 return self.username
 
-            TwitterMember.objects.create(twitter_id=self.twitter_user_id, english_name=self.username)
+            Member.objects.create(twitter_id=self.twitter_user_id, english_name=self.username, type='twitter')
             return self.username
         except Exception:
             return self.username
