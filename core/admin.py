@@ -8,8 +8,8 @@ class ProfileAdmin(admin.ModelAdmin):
 
 
 @admin.register(Member)
-class InstagramMemberAdmin(admin.ModelAdmin):
-    pass
+class MemberAdmin(admin.ModelAdmin):
+    list_display = ('type', 'english_name', 'chinese_name')
 
 
 @admin.register(Feed)

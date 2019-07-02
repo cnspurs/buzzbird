@@ -140,5 +140,29 @@ class Status:
         elif retweeted:
             return Status(self._status.retweeted_status)
 
+    @property
+    def created_at(self):
+        return self._status.created_at
+
+    @property
+    def link(self):
+        if self._status.media is None:
+            return None
+        return self._status.media[0].url
+
+    @property
+    def author(self):
+        return self._status.user.screen_name
+
+    @property
+    def first_image_url(self):
+        if self._status.media is None:
+            return None
+        return self._status.media[0].media_url_https
+
+    @property
+    def raw_json(self):
+        return self._status._json
+
 
 twitter = TwitterAPI(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET, tweet_mode='extended')
