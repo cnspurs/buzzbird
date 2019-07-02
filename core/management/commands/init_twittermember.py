@@ -10,7 +10,7 @@ class Command(BaseCommand):
 
         count = 0
         for user in members:
-            if Member.objects.filter(twitter_id=user.id_str).first() is not None:
+            if Member.objects.filter(twitter_id=user.id_str).first() is None:
                 Member.objects.create(twitter_id=user.id_str,
                                       english_name=user.name,
                                       type='twitter')
