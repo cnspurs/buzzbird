@@ -11,13 +11,11 @@ FEED_TYPES = [
 ]
 
 
-class InstagramManager(models.Manager):
-    def get_queryset(self):
+class FeedManager(models.Manager):
+    def instagram(self):
         return super().get_queryset().filter(type='instagram')
 
-
-class TwitterManager(models.Manager):
-    def get_queryset(self):
+    def twitter(self):
         return super().get_queryset().filter(type='twitter')
 
 
@@ -39,8 +37,7 @@ class Member(models.Model):
     type = models.CharField(max_length=16, choices=FEED_TYPES)
     twitter_id = models.CharField(max_length=128, null=True)
 
-    instagram = InstagramManager()
-    twitter = TwitterManager()
+    objects = FeedManager()
 
 
 class Settings(models.Model):
@@ -66,8 +63,7 @@ class Feed(models.Model):
     type = models.CharField(max_length=16, choices=FEED_TYPES)
     metadata = JSONField()
 
-    instagram = InstagramManager()
-    twitter = TwitterManager()
+    objects = FeedManager()
 
     def __str__(self):
         return f'<{self.__class__.__name__}: {self.id}, {self.user.english_name}:{self.title}, {self.created_at},' \
