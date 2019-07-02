@@ -32,7 +32,7 @@ class Profile(models.Model):
 
 
 class Member(models.Model):
-    english_name = models.CharField(max_length=64, primary_key=True)
+    english_name = models.CharField(max_length=64)
     chinese_name = models.CharField(max_length=16)
     twitter_id = models.CharField(max_length=128, null=True)
 
