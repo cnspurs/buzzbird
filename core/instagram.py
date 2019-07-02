@@ -40,7 +40,7 @@ def create_user(content):
     english_name = content['title']
     chinese_name = content['description']
 
-    im, _ = Member.objects.get_or_create(english_name=english_name, type='instagram')
+    im, _ = Member.objects.get_or_create(english_name=english_name)
     im.chinese_name = chinese_name
     im.save()
 
