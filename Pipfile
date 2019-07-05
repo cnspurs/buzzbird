@@ -15,6 +15,7 @@ django-q = "*"
 rollbar = "*"
 python-dateutil = "*"
 djangorestframework = "*"
+instaloader = "*"
 
 [dev-packages]
 ptpython = "*"
