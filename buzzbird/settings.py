@@ -154,7 +154,8 @@ LOGGING = {
             'filters': ['require_debug_false'],
             'access_token': os.getenv('ROLLBAR_ACCESS_TOKEN'),
             'environment': 'production',
-            'class': 'rollbar.logger.RollbarHandler'
+            'class': 'rollbar.logger.RollbarHandler',
+            'level': 'ERROR',
         },
         'info_file': {
             'level': 'INFO',
