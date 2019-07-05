@@ -14,4 +14,4 @@ class MemberAdmin(admin.ModelAdmin):
 
 @admin.register(Feed)
 class FeedAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('id', 'type', 'user', 'title', 'link', 'collected_at', 'created_at')

@@ -38,6 +38,9 @@ class Member(models.Model):
 
     objects = FeedManager()
 
+    def __str__(self):
+        return f'{self.english_name, self.chinese_name}'
+
 
 class Settings(models.Model):
     key = models.CharField(max_length=16, primary_key=True)

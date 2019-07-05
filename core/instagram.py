@@ -66,7 +66,7 @@ def save_contents():
     for feed in feeds:
         content = get_feed_content(feed)
         user = create_user(content)
-        for item in content['items']:
+        for item in reversed(content['items']):
             save_content(user, item)
 
 

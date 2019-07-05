@@ -3,6 +3,8 @@ import logging
 
 import requests
 from dateutil.parser import parse
+
+from django.db.models import Q
 from django.conf import settings
 
 from core.models import Feed, Member
@@ -14,8 +16,10 @@ logger = logging.getLogger('core.twitter')
 
 
 def create_user(twitter: Status):
-    tm, created = Member.objects.get_or_create(twitter_id=twitter.twitter_user_id, english_name=twitter.username,
-                                               type='twitter')
+    tm = Member.objects.filter(Q(twitter_id=twitter.twitter_user_id) | Q(english_name=twitter.screen_name)).first()
+    if not tm:
+        tm = Member.objects.create(twitter_id=twitter.twitter_user_id, english_name=twitter.screen_name)
+    tm.twitter_id = twitter.twitter_user_id
     tm.save()
     return tm
 
