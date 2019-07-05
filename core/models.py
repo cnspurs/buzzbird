@@ -41,6 +41,10 @@ class Member(models.Model):
     def __str__(self):
         return f'{self.english_name, self.chinese_name}'
 
+    @property
+    def name(self):
+        return self.chinese_name or self.english_name
+
 
 class Settings(models.Model):
     key = models.CharField(max_length=16, primary_key=True)

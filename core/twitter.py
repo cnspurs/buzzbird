@@ -5,7 +5,6 @@ import requests
 from dateutil.parser import parse
 
 from django.db.models import Q
-from django.conf import settings
 
 from core.models import Feed, Member
 from core.schema import Weibo
@@ -52,30 +51,11 @@ def get_image(url):
     return image_data
 
 
-def ig_to_weibo(ig: Feed):
-    text = f'【{ig.user.chinese_name} Ins】{ig.title[:110]}... https://spursnews.net/weibo/instagrams/{ig.id}'
+def twitter_to_weibo(twitter: Feed):
+    text = f'【{twitter.user.name} 推特】{twitter.title[:110]}... https://spursnews.net/weibo/instagrams/{twitter.id}'
     data = {
         'text': text,
-        'pic': get_image(ig.media_url),
-        'tweet_id': ig.id,
+        'pic': get_image(twitter.media_url),
+        'tweet_id': twitter.id,
     }
     return Weibo(**data)
-
-
-def send_to_discourse_as_post(twitter: Feed):
-    data = {
-        'api_username': 'SpursBuzzbird',
-        'api_key': settings.DISCOURSE_API_KEY,
-        'topic_id': 7569,
-        'raw': f'【{twitter.user.chinese_name} Ins】' + '\n'
-               + twitter.title + '\n'
-               + twitter.link
-    }
-
-    r = requests.post('https://discourse.cnspurs.com/posts.json', data=data)
-    if r.status_code == 200:
-        logger.info(r.text)
-        return True
-    else:
-        logger.error(f'Error while sending Twitter {twitter.id}: {r.text}')
-        return False
