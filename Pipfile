@@ -18,8 +18,8 @@ djangorestframework = "*"
 instaloader = "*"
 
 [dev-packages]
-ptpython = "*"
 python-dotenv = "*"
+ipython = "*"
 
 [requires]
 python_version = "3.7"
