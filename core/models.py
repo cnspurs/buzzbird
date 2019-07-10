@@ -1,6 +1,8 @@
 import logging
 import os
 
+import requests
+
 from urllib.parse import urlparse
 
 from django.conf import settings
@@ -117,6 +119,31 @@ class Media(models.Model):
     @property
     def ext(self):
         return self.original_name.split('.')[-1]
+
+    def download_to_local(self):
+        # saved as $name
+        name = self.original_name
+        path = os.path.join(settings.MEDIA_ROOT, name)
+
+        # save time
+        if os.path.isfile(path):
+            if not self.filename:
+                self.filename = name
+                self.save(update_fields=['filename'])
+            return
+
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) '
+                          'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
+        }
+        r = requests.get(self.original_url, timeout=3, headers=headers)
+        with open(path, 'wb') as f:
+            f.write(r.content)
+
+        logger.info(f'Media {self.id} save to local, filename: {name}')
+        self.filename = name
+        self.save(update_fields=['filename'])
+        return
 
 
 @receiver(post_save, sender=User)
