@@ -214,7 +214,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-IMAGE_ROOT = os.path.join(STATIC_ROOT, 'images')
+MEDIA_ROOT = os.path.join(STATIC_ROOT, 'media')
+CDN_URL = 'https://static.spursnews.net/'
+MEDIA_URL = CDN_URL + 'media/'
 
 weibo_app_id = os.getenv('WEIBO_APP_ID')
 weibo_app_secret = os.getenv('WEIBO_APP_SECRET')
