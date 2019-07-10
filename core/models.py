@@ -85,6 +85,10 @@ class Feed(models.Model):
         return f'<{self.__class__.__name__}: {self.id}, {self.user.english_name}:{self.title}, {self.created_at},' \
             f'is_buzzbird: {self.is_buzzbird}, is_discourse: {self.is_discourse}>'
 
+    @property
+    def downloaded_media(self):
+        return self.media.exclude(filename=None)
+
 
 class Media(models.Model):
     feed = models.ForeignKey('core.Feed', related_name='media', null=True, on_delete=models.SET_NULL)
@@ -99,6 +103,8 @@ class Media(models.Model):
 
     @property
     def url(self):
+        if not self.filename:
+            return ''
         return settings.MEDIA_URL + self.filename
 
     @property

@@ -54,10 +54,10 @@ class BBDetailAPIView(BBDetailModelMixin, generics.GenericAPIView):
 
 
 class FeedList(BBListAPIView):
-    queryset = Feed.objects.all().order_by('-created_at')[:100]
+    queryset = Feed.objects.all().select_related('user').prefetch_related('media').order_by('-created_at')[:100]
     serializer_class = FeedSerializer
 
 
 class FeedDetail(BBDetailAPIView):
-    queryset = Feed.objects.all()
+    queryset = Feed.objects.all().select_related('user').prefetch_related('media')
     serializer_class = FeedSerializer
