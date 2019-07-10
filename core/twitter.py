@@ -55,7 +55,7 @@ def twitter_to_weibo(twitter: Feed):
     text = f'【{twitter.user.name} 推特】{twitter.title[:110]}... https://spursnews.net/weibo/instagrams/{twitter.id}'
     data = {
         'text': text,
-        'pic': get_image(twitter.media_url),
+        'pic': get_image(twitter.media_url) if twitter.media_url else None,
         'tweet_id': twitter.id,
     }
     return Weibo(**data)
