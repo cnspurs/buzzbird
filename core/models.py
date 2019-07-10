@@ -1,9 +1,17 @@
+import logging
+import os
+
+from urllib.parse import urlparse
+
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+
+logger = logging.getLogger('core.models')
 
 FEED_TYPES = [
     ('instagram', 'Instagram'),
@@ -74,6 +82,41 @@ class Feed(models.Model):
     def __str__(self):
         return f'<{self.__class__.__name__}: {self.id}, {self.user.english_name}:{self.title}, {self.created_at},' \
             f'is_buzzbird: {self.is_buzzbird}, is_discourse: {self.is_discourse}>'
+
+
+class Media(models.Model):
+    feed = models.ForeignKey('core.Feed', related_name='media', null=True, on_delete=models.SET_NULL)
+    filename = models.CharField(max_length=512, null=True)
+    original_url = models.URLField(max_length=1024)
+
+    @property
+    def local_path(self):
+        if not self.filename:
+            return ''
+        return os.path.join(settings.MEDIA_ROOT, self.filename)
+
+    @property
+    def url(self):
+        return settings.MEDIA_URL + self.filename
+
+    @property
+    def downloaded(self):
+        if os.path.isfile(self.local_path):
+            return True
+        return False
+
+    @property
+    def path(self):
+        result = urlparse(self.original_url)
+        return result.path
+
+    @property
+    def original_name(self):
+        return self.path.split('/')[-1]
+
+    @property
+    def ext(self):
+        return self.original_name.split('.')[-1]
 
 
 @receiver(post_save, sender=User)
