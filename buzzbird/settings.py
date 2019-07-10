@@ -54,8 +54,8 @@ if not DEBUG:
 
 Q_CLUSTER = {
     'name': 'DjangORM',
-    'workers': 1,
-    'retry': 3600,
+    'workers': 8,
+    'retry': 600,
     'orm': 'default',
     'ack_failures': True,
 }
