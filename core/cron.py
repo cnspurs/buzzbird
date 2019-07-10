@@ -1,9 +1,10 @@
 import logging
-import datetime
+import random
+import time
 
-from core import instagram
-from core.models import Profile, Settings, Instagram
-from core.utils import twitter
+from core import instagram, twitter
+from core.models import Profile, Settings, Feed
+from core.utils import twitter as t
 
 from django.conf import settings
 
@@ -19,7 +20,7 @@ def sync():
 
     last_tweet_id = Settings.last_tweet_id()
 
-    timeline = twitter.get_timeline(since_id=last_tweet_id.value)
+    timeline = t.get_timeline(since_id=last_tweet_id.value)
     timeline.reverse()
 
     count = 0
@@ -32,6 +33,9 @@ def sync():
                 last_tweet_id.value = weibo.tweet_id
                 last_tweet_id.save()
                 count += 1
+            seconds = random.randint(15, 45)
+            time.sleep(seconds)
+            logger.info(f'Tweets: Published. Sleep {seconds} seconds')
 
     logger.info(f'Cron job finished. Length: {len(timeline)}, sent: {count}')
 
@@ -43,23 +47,39 @@ def sync_instagram():
 
 def sync_instagram_to_weibo():
     profile = Profile.objects.filter(user__username='5833511420').first()
-    qs = Instagram.objects.filter(is_buzzbird=False).order_by('published_at')
+    qs = Feed.objects.instagram().filter(is_buzzbird=False).order_by('created_at')
     for ig in qs:
         weibo = instagram.ig_to_weibo(ig)
         result = oauth_weibo.post(profile, weibo)
         if result:
             ig.is_buzzbird = True
             ig.save()
-            logger.info(f'Instagram: synced {ig.author}: {ig.title}')
+        seconds = random.randint(15, 45)
+        logger.info(f'Instagram: synced {ig.author}: {ig.title}. Sleep {seconds} seconds.')
+        time.sleep(seconds)
 
 
 def sync_instagram_to_discourse():
-    qs = Instagram.objects \
+    qs = Feed.objects.instagram() \
         .filter(is_discourse=False) \
-        .order_by('published_at')
+        .order_by('created_at')
     for ig in qs:
         result = instagram.send_to_discourse_as_post(ig)
         if result:
             ig.is_discourse = True
             ig.save()
             logger.info(f'Instagram synced to discourse: {ig.author}, {ig.title}')
+
+
+def sync_twitter_to_buzzbird():
+    profile = Profile.objects.filter(user__username='5833511420').first()
+    qs = Feed.objects.twitter().filter(is_buzzbird=False).order_by('created_at')
+    for t in qs:
+        weibo = twitter.twitter_to_weibo(t)
+        result = oauth_weibo.post(profile, weibo)
+        if result:
+            t.is_buzzbird = True
+            t.save()
+        seconds = random.randint(15, 45)
+        logger.info(f'Twitter: synced {t.author}: {t.title}. Sleep {seconds} seconds.')
+        time.sleep(seconds)

@@ -16,7 +16,6 @@ from core.oauth_weibo import OAuthWeibo
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
@@ -41,14 +40,22 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'django_q',
     'core',
 ]
 
+if not DEBUG:
+    REST_FRAMEWORK = {
+        'DEFAULT_RENDERER_CLASSES': (
+            'rest_framework.renderers.JSONRenderer',
+        )
+    }
+
 Q_CLUSTER = {
     'name': 'DjangORM',
-    'workers': 1,
-    'retry': 3600,
+    'workers': 8,
+    'retry': 600,
     'orm': 'default',
     'ack_failures': True,
 }
@@ -84,7 +91,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'buzzbird.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
@@ -105,7 +111,6 @@ DATABASES = {
         'PORT': os.getenv('DATABASE_PORT'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -146,10 +151,11 @@ LOGGING = {
             'formatter': 'default'
         },
         'rollbar': {
-                'filters': ['require_debug_false'],
-                'access_token': os.getenv('ROLLBAR_ACCESS_TOKEN'),
-                'environment': 'production',
-                'class': 'rollbar.logger.RollbarHandler'
+            'filters': ['require_debug_false'],
+            'access_token': os.getenv('ROLLBAR_ACCESS_TOKEN'),
+            'environment': 'production',
+            'class': 'rollbar.logger.RollbarHandler',
+            'level': 'ERROR',
         },
         'info_file': {
             'level': 'INFO',
@@ -190,7 +196,6 @@ LOGGING = {
     }
 }
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
@@ -204,12 +209,14 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_ROOT = os.path.join(STATIC_ROOT, 'media')
+CDN_URL = 'https://static.spursnews.net/'
+MEDIA_URL = CDN_URL + 'media/'
 
 weibo_app_id = os.getenv('WEIBO_APP_ID')
 weibo_app_secret = os.getenv('WEIBO_APP_SECRET')

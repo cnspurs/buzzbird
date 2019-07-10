@@ -7,17 +7,11 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'access_token', 'access_token_expired_at')
 
 
-@admin.register(TwitterMember)
-class TwitterMemberAdmin(admin.ModelAdmin):
-    list_display = ('twitter_id', 'english_name', 'chinese_name')
-    readonly_fields = ('twitter_id',)
+@admin.register(Member)
+class MemberAdmin(admin.ModelAdmin):
+    list_display = ('english_name', 'chinese_name', 'twitter_id')
 
 
-@admin.register(InstagramMember)
-class InstagramMemberAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(Instagram)
-class InstagramAdmin(admin.ModelAdmin):
-    pass
+@admin.register(Feed)
+class FeedAdmin(admin.ModelAdmin):
+    list_display = ('id', 'type', 'user', 'title', 'link', 'collected_at', 'created_at')

@@ -14,9 +14,11 @@ gunicorn = "*"
 django-q = "*"
 rollbar = "*"
 python-dateutil = "*"
+djangorestframework = "*"
+instaloader = "*"
+ipython = "*"
 
 [dev-packages]
-ptpython = "*"
 python-dotenv = "*"
 
 [requires]

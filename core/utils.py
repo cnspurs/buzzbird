@@ -5,7 +5,7 @@ from io import BytesIO
 import requests
 import twitter as t
 
-from core.models import TwitterMember
+from core.models import Member
 from core.schema import Weibo
 
 logger = logging.getLogger('core.utils')
@@ -67,14 +67,14 @@ class Status:
     @property
     def screen_name(self):
         try:
-            twitter_member: TwitterMember = TwitterMember.objects.filter(twitter_id=self.twitter_user_id).first()
+            twitter_member: Member = Member.objects.filter(twitter_id=self.twitter_user_id, type='twitter').first()
 
             if twitter_member:
                 if twitter_member.chinese_name is not None:
                     return twitter_member.chinese_name
                 return self.username
 
-            TwitterMember.objects.create(twitter_id=self.twitter_user_id, english_name=self.username)
+            Member.objects.create(twitter_id=self.twitter_user_id, english_name=self.username)
             return self.username
         except Exception:
             return self.username
@@ -139,6 +139,30 @@ class Status:
 
         elif retweeted:
             return Status(self._status.retweeted_status)
+
+    @property
+    def created_at(self):
+        return self._status.created_at
+
+    @property
+    def link(self):
+        if self._status.media is None:
+            return None
+        return self._status.media[0].url
+
+    @property
+    def author(self):
+        return self._status.user.screen_name
+
+    @property
+    def first_image_url(self):
+        if self._status.media is None:
+            return None
+        return self._status.media[0].media_url_https
+
+    @property
+    def raw_json(self):
+        return self._status._json
 
 
 twitter = TwitterAPI(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET, tweet_mode='extended')
