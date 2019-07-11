@@ -20,6 +20,9 @@ ipython = "*"
 
 [dev-packages]
 python-dotenv = "*"
+mimesis = "*"
+pytest = "*"
+pytest-django = "*"
 
 [requires]
 python_version = "3.7"
