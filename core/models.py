@@ -105,10 +105,14 @@ class Media(models.Model):
         return os.path.join(settings.MEDIA_ROOT, self.filename)
 
     @property
+    def date_str(self):
+        return self.date.strftime('%Y-%m-%d')
+
+    @property
     def url(self):
         if not self.filename:
             return ''
-        return settings.MEDIA_URL + self.filename
+        return settings.MEDIA_URL + self.date_str + '/' + self.filename
 
     @property
     def downloaded(self):
