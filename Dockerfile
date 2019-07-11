@@ -7,7 +7,7 @@ RUN mkdir /usr/src/app
 RUN chown www:www /usr/src/app
 USER www
 RUN mkdir -p /usr/src/app/logs/django
-RUN mkdir -p /usr/src/app/static/images
+RUN mkdir -p /usr/src/app/static/media
 WORKDIR /usr/src/app
 
 ADD . /usr/src/app

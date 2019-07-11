@@ -10,7 +10,7 @@ class Command(BaseCommand):
     """
 
     def handle(self, *args, **options):
-        feeds = Feed.objects.all().exclude(media_url=None).select_related('media')
+        feeds = Feed.objects.all().exclude(type='twitter', media_url=None).prefetch_related('media')
         for feed in feeds:
             media = Media.objects.filter(feed=feed, original_url=feed.media_url)
             if media:
