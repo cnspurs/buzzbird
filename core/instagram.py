@@ -5,8 +5,9 @@ import re
 import requests
 from dateutil.parser import parse
 from django.conf import settings
+from django_q.tasks import async_task
 
-from core.models import Feed, Member
+from core.models import Feed, Member, Media
 from core.schema import Weibo
 
 logger = logging.getLogger('core.instagram')
@@ -55,8 +56,14 @@ def save_content(user, item):
         return ig
 
     created_at = parse(item['pubDate'])
-    ig = Feed.objects.create(author=item['author'], link=link, media_url=item['media:content'],
-                             created_at=created_at, title=item['title'], user=user, type='instagram')
+    ig = Feed.objects.create(author=item['author'], link=link, created_at=created_at, title=item['title'],
+                             user=user, type='instagram')
+
+    media_url = item.get('media:content')
+    if media_url is not None:
+        m = Media.objects.create(feed=ig, original_url=media_url)
+        async_task(m.download_to_local)
+
     logger.info(f'Instagram: {ig} saved')
     return ig
 

@@ -102,7 +102,7 @@ class Media(models.Model):
     def local_path(self):
         if not self.filename:
             return ''
-        return os.path.join(settings.MEDIA_ROOT, self.filename)
+        return os.path.join(settings.MEDIA_ROOT, self.date_str, self.filename)
 
     @property
     def date_str(self):

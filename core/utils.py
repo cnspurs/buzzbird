@@ -116,8 +116,14 @@ class Status:
 
     @property
     def images(self):
-        # 反正现在又用不上
-        return None
+        result = []
+        media: list = self._status.media
+        if media is not None:
+            for m in media:
+                if m.video_info is None:
+                    result.append(m.media_url_https)
+
+        return result
 
     @property
     def retweet(self):

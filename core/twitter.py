@@ -5,8 +5,9 @@ import requests
 from dateutil.parser import parse
 
 from django.db.models import Q
+from django_q.tasks import async_task
 
-from core.models import Feed, Member
+from core.models import Feed, Member, Media
 from core.schema import Weibo
 from core.utils import Status
 from core.utils import twitter as t
@@ -31,9 +32,13 @@ def save_content(user, item: Status):
         return twitter
 
     created_at = parse(item.created_at)
-    twitter = Feed.objects.create(author=item.author, link=link, media_url=item.first_image_url,
-                                  created_at=created_at, title=item.text, user=user, type='twitter',
-                                  metadata=item.raw_json)
+    twitter = Feed.objects.create(author=item.author, link=link, created_at=created_at, title=item.text,
+                                  user=user, type='twitter')
+
+    for url in item.images:
+        m = Media.objects.create(feed=twitter, original_url=url)
+        async_task(m.download_to_local)
+
     logger.info(f'Twitter: {twitter} saved')
     return twitter
 
