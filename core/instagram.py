@@ -7,6 +7,7 @@ from dateutil.parser import parse
 from django.conf import settings
 from django_q.tasks import async_task
 
+from core import func
 from core.models import Feed, Member, Media
 from core.schema import Weibo
 
@@ -85,9 +86,12 @@ def get_image(url):
 
 def ig_to_weibo(ig: Feed):
     text = f'【{ig.user.chinese_name} Ins】{ig.title[:110]}... https://spursnews.net/weibo/instagrams/{ig.id}'
+    media = None
+    if ig.media.count() > 0:
+        media = ig.media.all()[0]
     data = {
         'text': text,
-        'pic': get_image(ig.media_url),
+        'pic': func.get_local_image(media.local_path),
         'tweet_id': ig.id,
     }
     return Weibo(**data)
