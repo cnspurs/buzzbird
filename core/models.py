@@ -13,6 +13,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
 
+from core import func
+
 logger = logging.getLogger('core.models')
 
 FEED_TYPES = [
@@ -78,6 +80,7 @@ class Feed(models.Model):
     user = models.ForeignKey('core.Member', related_name='posts', null=True, on_delete=models.SET_NULL)
     type = models.CharField(max_length=16, choices=FEED_TYPES)
     metadata = JSONField(null=True)
+    status_id = models.CharField(max_length=128, null=True)
 
     objects = FeedManager()
 
@@ -91,6 +94,7 @@ class Feed(models.Model):
 
 
 class Media(models.Model):
+    date = models.DateField(auto_now_add=True)
     feed = models.ForeignKey('core.Feed', related_name='media', null=True, on_delete=models.SET_NULL)
     filename = models.CharField(max_length=512, null=True)
     original_url = models.URLField(max_length=1024)
@@ -99,13 +103,17 @@ class Media(models.Model):
     def local_path(self):
         if not self.filename:
             return ''
-        return os.path.join(settings.MEDIA_ROOT, self.filename)
+        return os.path.join(settings.MEDIA_ROOT, self.date_str, self.filename)
+
+    @property
+    def date_str(self):
+        return self.date.strftime('%Y-%m-%d')
 
     @property
     def url(self):
         if not self.filename:
             return ''
-        return settings.MEDIA_URL + self.filename
+        return settings.MEDIA_URL + self.date_str + '/' + self.filename
 
     @property
     def downloaded(self):
@@ -129,7 +137,8 @@ class Media(models.Model):
     def download_to_local(self):
         # saved as $name
         name = self.original_name
-        path = os.path.join(settings.MEDIA_ROOT, name)
+        path = func.create_date_dir(self.date)
+        path = os.path.join(path, name)
 
         # save time
         if os.path.isfile(path):
@@ -146,7 +155,7 @@ class Media(models.Model):
         with open(path, 'wb') as f:
             f.write(r.content)
 
-        logger.info(f'Media {self.id} save to local, filename: {name}')
+        logger.info(f'Media {self.id} saved to local, path: {path}')
         self.filename = name
         self.save(update_fields=['filename'])
         return

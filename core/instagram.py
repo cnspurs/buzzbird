@@ -5,8 +5,10 @@ import re
 import requests
 from dateutil.parser import parse
 from django.conf import settings
+from django_q.tasks import async_task
 
-from core.models import Feed, Member
+from core import func
+from core.models import Feed, Member, Media
 from core.schema import Weibo
 
 logger = logging.getLogger('core.instagram')
@@ -55,8 +57,14 @@ def save_content(user, item):
         return ig
 
     created_at = parse(item['pubDate'])
-    ig = Feed.objects.create(author=item['author'], link=link, media_url=item['media:content'],
-                             created_at=created_at, title=item['title'], user=user, type='instagram')
+    ig = Feed.objects.create(author=item['author'], link=link, created_at=created_at, title=item['title'],
+                             user=user, type='instagram')
+
+    media_url = item.get('media:content')
+    if media_url is not None:
+        m = Media.objects.create(feed=ig, original_url=media_url)
+        async_task(m.download_to_local)
+
     logger.info(f'Instagram: {ig} saved')
     return ig
 
@@ -78,9 +86,12 @@ def get_image(url):
 
 def ig_to_weibo(ig: Feed):
     text = f'【{ig.user.chinese_name} Ins】{ig.title[:110]}... https://spursnews.net/weibo/instagrams/{ig.id}'
+    media = None
+    if ig.media.count() > 0:
+        media = ig.media.all()[0]
     data = {
         'text': text,
-        'pic': get_image(ig.media_url),
+        'pic': func.get_local_image(media.local_path),
         'tweet_id': ig.id,
     }
     return Weibo(**data)
