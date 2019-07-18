@@ -67,7 +67,7 @@ def save_contents():
         posts = profile.get_posts()
         for post in posts:
             two_days_before = timezone.now() + timezone.timedelta(days=-1)
-            created_at = parse(post.date)
+            created_at = post.date.replace(tzinfo=timezone.utc)
             if created_at < two_days_before:
                 logger.info(f'Instagram: https://instagram.com/p/{post.shortcode} is too old.')
                 break
