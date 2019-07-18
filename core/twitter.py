@@ -33,7 +33,7 @@ def save_content(user, item: Status):
 
     created_at = parse(item.created_at)
     twitter = Feed.objects.create(author=item.author, link=link, created_at=created_at, title=item.text,
-                                  user=user, type='twitter', meta=item.raw_json, status_id=item.tweet_id)
+                                  user=user, type='twitter', metadata=item.raw_json, status_id=item.tweet_id)
 
     for url in item.images:
         m = Media.objects.create(feed=twitter, original_url=url)
