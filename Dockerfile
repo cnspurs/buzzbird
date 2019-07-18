@@ -9,6 +9,7 @@ USER www
 RUN mkdir -p /usr/src/app/logs/django
 RUN mkdir -p /usr/src/app/static/media
 RUN mkdir -p /usr/src/app/sessions
+RUN chown www:www /usr/src/app/sessions
 
 WORKDIR /usr/src/app
 
