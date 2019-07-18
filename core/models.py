@@ -20,12 +20,16 @@ logger = logging.getLogger('core.models')
 FEED_TYPES = [
     ('instagram', 'Instagram'),
     ('twitter', 'Twitter'),
+    ('instagram_v2', 'Instagram V2'),
 ]
 
 
 class FeedManager(models.Manager):
     def instagram(self):
         return super().get_queryset().filter(type='instagram')
+
+    def instagram_v2(self):
+        return super().get_queryset().filter(type='instagram_v2')
 
     def twitter(self):
         return super().get_queryset().filter(type='twitter')
@@ -44,8 +48,10 @@ class Profile(models.Model):
 
 
 class Member(models.Model):
+    avatar = models.OneToOneField('core.Media', null=True, on_delete=models.SET_NULL)
     english_name = models.CharField(max_length=64)
     chinese_name = models.CharField(max_length=16)
+    instagram_id = models.CharField(max_length=64, null=True)
     twitter_id = models.CharField(max_length=128, null=True)
 
     objects = FeedManager()
@@ -57,6 +63,9 @@ class Member(models.Model):
     def name(self):
         return self.chinese_name or self.english_name
 
+    @property
+    def avatar_url(self):
+        return self.avatar.url
 
 class Settings(models.Model):
     key = models.CharField(max_length=16, primary_key=True)
@@ -73,14 +82,14 @@ class Feed(models.Model):
     collected_at = models.DateTimeField(auto_now_add=True)
     is_buzzbird = models.BooleanField('Published to buzzbird Weibo?', default=False)
     is_discourse = models.BooleanField('Published to discourse?', default=False)
-    media_url = models.URLField(max_length=1024, null=True)
+    is_video = models.BooleanField(default=False)
     link = models.URLField(db_index=True, null=True)
     created_at = models.DateTimeField()
     title = models.CharField(blank=True, max_length=1024)
     user = models.ForeignKey('core.Member', related_name='posts', null=True, on_delete=models.SET_NULL)
     type = models.CharField(max_length=16, choices=FEED_TYPES)
     metadata = JSONField(null=True)
-    status_id = models.CharField(max_length=128, null=True)
+    status_id = models.CharField(max_length=128, null=True, db_index=True)
 
     objects = FeedManager()
 
