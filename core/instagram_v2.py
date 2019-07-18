@@ -38,7 +38,8 @@ def save_content(user: Member, post: instaloader.Post) -> Feed or None:
     created_at = post.date.replace(tzinfo=timezone.utc)
 
     ig = Feed.objects.create(author=profile.username, created_at=created_at, title=post.caption, user=user,
-                             type='instagram_v2')
+                             type='instagram_v2', status_id=post.shortcode,
+                             link=f'https://www.instagram.com/p/{post.shortcode}')
 
     # Only an image
     if post.typename == 'GraphImage':
