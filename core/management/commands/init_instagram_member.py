@@ -45,10 +45,12 @@ class Command(BaseCommand):
             if m:
                 user_id, profile_pic_url = v
                 m.instagram_id = str(user_id)
+                m.save()
+
                 media = Media.objects.create(original_url=profile_pic_url)
                 m.avatar = media
-                async_task(media.download_to_local)
                 m.save()
+                async_task(media.download_to_local)
 
                 self.stdout.write(f'{m.english_name} with instagram_id {m.instagram_id}')
 
