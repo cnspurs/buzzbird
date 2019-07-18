@@ -67,6 +67,7 @@ class Member(models.Model):
     def avatar_url(self):
         return self.avatar.url
 
+
 class Settings(models.Model):
     key = models.CharField(max_length=16, primary_key=True)
     value = models.CharField(max_length=255, null=True)
@@ -92,10 +93,6 @@ class Feed(models.Model):
     status_id = models.CharField(max_length=128, null=True, db_index=True)
 
     objects = FeedManager()
-
-    def __str__(self):
-        return f'<{self.__class__.__name__}: {self.id}, {self.user.english_name}:{self.title}, {self.created_at},' \
-            f'is_buzzbird: {self.is_buzzbird}, is_discourse: {self.is_discourse}>'
 
     @property
     def downloaded_media(self):

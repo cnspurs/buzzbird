@@ -9,9 +9,9 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Member)
 class MemberAdmin(admin.ModelAdmin):
-    list_display = ('english_name', 'chinese_name', 'twitter_id')
+    list_display = ('english_name', 'chinese_name', 'twitter_id', 'instagram_id')
 
 
 @admin.register(Feed)
 class FeedAdmin(admin.ModelAdmin):
-    list_display = ('id', 'type', 'user', 'title', 'link', 'collected_at', 'created_at')
+    list_display = ('id', 'type', 'user', 'title', 'link', 'collected_at', 'created_at', 'status_id')
