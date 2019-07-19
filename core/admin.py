@@ -14,4 +14,5 @@ class MemberAdmin(admin.ModelAdmin):
 
 @admin.register(Feed)
 class FeedAdmin(admin.ModelAdmin):
-    list_display = ('id', 'type', 'user', 'title', 'link', 'collected_at', 'created_at', 'status_id')
+    list_display = ('id', 'is_buzzbird', 'is_discourse', 'is_video', 'type', 'user', 'title', 'link', 'collected_at',
+                    'created_at', 'status_id')
