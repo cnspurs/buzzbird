@@ -37,7 +37,11 @@ def save_content(user: Member, post: instaloader.Post) -> Feed or None:
     profile = post.owner_profile
     created_at = post.date.replace(tzinfo=timezone.utc)
 
-    ig = Feed.objects.create(author=profile.username, created_at=created_at, title=post.caption, user=user,
+    # handle caption
+    caption = ''
+    if post.caption is not None:
+        caption = post.caption
+    ig = Feed.objects.create(author=profile.username, created_at=created_at, title=caption, user=user,
                              type='instagram_v2', status_id=post.shortcode,
                              link=f'https://www.instagram.com/p/{post.shortcode}')
 
