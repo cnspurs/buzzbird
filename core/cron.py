@@ -83,3 +83,18 @@ def sync_twitter_to_buzzbird():
         seconds = random.randint(15, 45)
         logger.info(f'Twitter: synced {t.author}: {t.title}. Sleep {seconds} seconds.')
         time.sleep(seconds)
+
+
+def sync_instagram_v2_to_buzzbird():
+    profile = Profile.objects.filter(user__username='5833511420').first()
+    qs = Feed.objects.instagram_v2().filter(is_buzzbird=False).prefetch_related('media').order_by('created_at')
+
+    for ig in qs:
+        weibo = instagram.ig_to_weibo(ig)
+        result = oauth_weibo.post(profile, weibo)
+        if result:
+            ig.is_buzzbird = True
+            ig.save(update_fields=['is_buzzbird'])
+        seconds = random.randint(15, 45)
+        logger.info(f'Instagram V2: synced {ig.author}: {ig.title}. Sleep {seconds} seconds.')
+        time.sleep(seconds)
