@@ -1,6 +1,14 @@
 from rest_framework import serializers
 
-from core.models import Feed, Media
+from core.models import Feed, Media, Member
+
+
+class MemberSerializer(serializers.ModelSerializer):
+    avatar_url = serializers.URLField()
+
+    class Meta:
+        model = Member
+        exclude = ('avatar',)
 
 
 class MediaSerializer(serializers.Serializer):
@@ -14,8 +22,8 @@ class MediaSerializer(serializers.Serializer):
 
 class FeedSerializer(serializers.ModelSerializer):
     media = MediaSerializer(source='downloaded_media', many=True)
+    user = MemberSerializer()
 
     class Meta:
         model = Feed
-        exclude = ('metadata', 'is_buzzbird', 'is_discourse', 'author',)
-        depth = 2
+        exclude = ('metadata', 'is_buzzbird', 'is_discourse', 'author')

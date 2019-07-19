@@ -232,3 +232,8 @@ ROLLBAR = {
 FETCHRSS_API_KEY = os.getenv('FETCHRSS_API_KEY', 'xxx')
 
 DISCOURSE_API_KEY = os.getenv('DISCOURSE_API_KEY', 'xxx')
+
+# Instagram V2
+INSTAGRAM_NAME = os.getenv('INSTAGRAM_USERNAME', 'xxx')
+INSTAGRAM_PASSWORD = os.getenv('INSTAGRAM_PASSWORD', 'xxx')
+INSTAGRAM_SESSION_DIR = os.path.join(BASE_DIR, 'sessions')
