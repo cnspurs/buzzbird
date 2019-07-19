@@ -64,7 +64,7 @@ def twitter_to_weibo(twitter: Feed):
         media = twitter.media.all()[0]
     data = {
         'text': text,
-        'pic': func.get_local_image(media.local_path),
+        'pic': func.get_local_image(media.local_path) if media is not None else None,
         'tweet_id': twitter.id,
     }
     return Weibo(**data)
