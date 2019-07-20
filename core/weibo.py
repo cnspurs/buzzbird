@@ -3,7 +3,9 @@ import logging
 from dateutil.parser import parse
 import requests
 
-from core.models import Profile, Feed, Member
+from django_q.tasks import async_task
+
+from core.models import Profile, Feed, Member, Media
 
 logger = logging.getLogger('core.weibo')
 
@@ -46,20 +48,20 @@ class WeiboPost:
         return self.status['id']
 
     @property
-    def author(self):
-        return self.user['screen_name']
-
-    @property
-    def text(self):
-        return self.status['text']
-
-    @property
     def user(self):
         return self.status['user']
 
     @property
+    def author(self):
+        return self.user['screen_name']
+
+    @property
     def mid(self):
         return self.status['mid']
+
+    @property
+    def text(self):
+        return self.status['text']
 
     @property
     def created_at(self):
@@ -71,6 +73,14 @@ class WeiboPost:
         post_url = f'https://weibo.com/{user_id}/{mid_to_url(self.mid)}'
         return post_url
 
+    @property
+    def pic_urls(self):
+        urls = []
+        for item in self.status['pic_urls']:
+            thumbnail_url = item['thumbnail_pic']
+            urls.append(thumbnail_url.replace('/thumbnail/', '/large/'))
+        return urls
+
 
 def get_home_timeline(profile: Profile):
     url = 'https://api.weibo.com/2/statuses/home_timeline.json'
@@ -80,10 +90,12 @@ def get_home_timeline(profile: Profile):
     }
 
     r = requests.get(url, data)
+    if not r.ok:
+        return None
     return r.json()
 
 
-def create_user(post: WeiboPost) -> Member:
+def get_or_create_user(post: WeiboPost) -> Member:
     wm, _ = Member.objects.get_or_create(chinese_name=post.author)
     wm.twitter_id = post.user['idstr']
     return wm
@@ -97,9 +109,25 @@ def save_content(user: Member, post: WeiboPost) -> Feed or None:
     weibo = Feed.objects.weibo(author=post.author, link=post.url, create_at=post.created_at, title=post.text,
                                user=user, type='weibo', metadata=post.status, status_id=post.id)
 
+    for url in post.pic_urls:
+        media = Media.objects.create(feed=weibo, original_url=url)
+        async_task(media.download_to_local)
+
     logger.info(f'Weibo: {weibo} saved')
     return weibo
 
 
 def save_contents():
-    pass
+    profile = Profile.objects.filter(user__username='5833511420').first()
+    home_timeline = get_home_timeline(profile)
+    if not home_timeline:
+        return
+
+    posts = [WeiboPost(status) for status in home_timeline['statuses']]
+    for post in posts:
+        # Skip Weibo posts posted by buzzbird
+        if post.user['id'] == 5833511420:
+            continue
+
+        user = get_or_create_user(post)
+        save_content(user, post)
