@@ -60,14 +60,3 @@ class OAuthWeibo:
             return True
 
         logger.error(f'error: {r.text}, weibo.text: {weibo.text}')
-
-    @staticmethod
-    def get_home_timeline(access_token: str):
-        url = 'https://api.weibo.com/2/statuses/home_timeline.json'
-        data = {
-            'access_token': access_token,
-            'count': 100
-        }
-
-        r = requests.get(url, data)
-
