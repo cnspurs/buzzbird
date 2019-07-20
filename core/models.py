@@ -21,6 +21,7 @@ FEED_TYPES = [
     ('instagram', 'Instagram'),
     ('twitter', 'Twitter'),
     ('instagram_v2', 'Instagram V2'),
+    ('weibo', 'Weibo'),
 ]
 
 
@@ -33,6 +34,9 @@ class FeedManager(models.Manager):
 
     def twitter(self):
         return super().get_queryset().filter(type='twitter')
+
+    def weibo(self):
+        return super().get_queryset().filter(type='weibo')
 
 
 class Profile(models.Model):
