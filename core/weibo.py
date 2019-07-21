@@ -99,7 +99,13 @@ def get_or_create_user(post: WeiboPost) -> Member:
     wm, created = Member.objects.get_or_create(chinese_name=post.author)
     if created:
         wm.weibo_id = post.user['idstr']
-        wm.save(update_fields=['weibo_id'])
+
+        # Now the avatar won't be updated after this Member is created
+        avatar = Media.objects.create(original_url=post.user['avatar_hd'])
+        wm.avatar = avatar
+        async_task(avatar.download_to_local)
+
+        wm.save(update_fields=['weibo_id', 'avatar'])
     return wm
 
 
