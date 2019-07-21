@@ -24,8 +24,10 @@ except FileNotFoundError:
 
 
 def create_user(profile: instaloader.Post) -> Member:
-    im, _ = Member.objects.get_or_create(english_name=profile.owner_profile.full_name)
-    im.twitter_id = str(profile.owner_id)
+    im, created = Member.objects.get_or_create(english_name=profile.owner_profile.full_name)
+    if created:
+        im.instagram_id = str(profile.owner_id)
+        im.save(update_fields=['instagram_id'])
     return im
 
 
