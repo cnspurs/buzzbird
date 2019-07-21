@@ -103,10 +103,10 @@ def get_or_create_user(post: WeiboPost) -> Member:
     return wm
 
 
-def save_content(user: Member, post: WeiboPost) -> Feed or None:
+def save_content(user: Member, post: WeiboPost) -> (Feed, bool):
     weibo = Feed.objects.weibo().filter(status_id=post.id).first()
     if weibo:
-        return weibo
+        return weibo, False
 
     weibo = Feed.objects.weibo(author=post.author, link=post.url, create_at=post.created_at, title=post.text,
                                user=user, type='weibo', metadata=post.status, status_id=post.id)
@@ -116,7 +116,7 @@ def save_content(user: Member, post: WeiboPost) -> Feed or None:
         async_task(media.download_to_local)
 
     logger.info(f'Weibo: {weibo} saved')
-    return weibo
+    return weibo, True
 
 
 def save_contents():
@@ -132,4 +132,6 @@ def save_contents():
             continue
 
         user = get_or_create_user(post)
-        save_content(user, post)
+        _, created = save_content(user, post)
+        if not created:
+            break
