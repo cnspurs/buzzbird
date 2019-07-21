@@ -96,8 +96,10 @@ def get_home_timeline(profile: Profile):
 
 
 def get_or_create_user(post: WeiboPost) -> Member:
-    wm, _ = Member.objects.get_or_create(chinese_name=post.author)
-    wm.twitter_id = post.user['idstr']
+    wm, created = Member.objects.get_or_create(chinese_name=post.author)
+    if created:
+        wm.weibo_id = post.user['idstr']
+        wm.save(update_fields=['weibo_id'])
     return wm
 
 

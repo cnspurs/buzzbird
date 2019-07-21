@@ -57,6 +57,7 @@ class Member(models.Model):
     chinese_name = models.CharField(max_length=16)
     instagram_id = models.CharField(max_length=64, null=True)
     twitter_id = models.CharField(max_length=128, null=True)
+    weibo_id = models.CharField(max_length=64, null=True)
 
     objects = FeedManager()
 
