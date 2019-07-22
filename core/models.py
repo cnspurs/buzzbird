@@ -70,6 +70,8 @@ class Member(models.Model):
 
     @property
     def avatar_url(self):
+        if self.avatar is None:
+            return None
         return self.avatar.url
 
 
