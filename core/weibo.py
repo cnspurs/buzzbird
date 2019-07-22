@@ -114,8 +114,8 @@ def save_content(user: Member, post: WeiboPost) -> (Feed, bool):
     if weibo:
         return weibo, False
 
-    weibo = Feed.objects.weibo(author=post.author, link=post.url, create_at=post.created_at, title=post.text,
-                               user=user, type='weibo', metadata=post.status, status_id=post.id)
+    weibo = Feed.objects.create(author=post.author, link=post.url, create_at=post.created_at, title=post.text,
+                                user=user, type='weibo', metadata=post.status, status_id=post.id)
 
     for url in post.pic_urls:
         media = Media.objects.create(feed=weibo, original_url=url)
