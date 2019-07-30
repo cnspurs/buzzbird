@@ -105,6 +105,16 @@ class Feed(models.Model):
     def downloaded_media(self):
         return self.media.exclude(filename=None)
 
+    @property
+    def readable_type(self):
+        mapping = {
+            'weibo': 'Weibo',
+            'instagram': 'Instagram',
+            'instagram_v2': 'Instagram',
+        }
+
+        return mapping.get(self.type, self.type)
+
 
 class Media(models.Model):
     date = models.DateField(auto_now_add=True)

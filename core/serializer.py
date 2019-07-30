@@ -23,6 +23,7 @@ class MediaSerializer(serializers.Serializer):
 class FeedSerializer(serializers.ModelSerializer):
     media = MediaSerializer(source='downloaded_media', many=True)
     user = MemberSerializer()
+    type = serializers.CharField(source='readable_type')
 
     class Meta:
         model = Feed
