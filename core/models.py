@@ -108,12 +108,10 @@ class Feed(models.Model):
     @property
     def readable_type(self):
         mapping = {
-            'weibo': 'Weibo',
-            'instagram': 'Instagram',
             'instagram_v2': 'Instagram',
         }
 
-        return mapping.get(self.type, self.type)
+        return mapping.get(self.type, self.type.capitalize())
 
 
 class Media(models.Model):
