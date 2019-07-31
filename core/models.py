@@ -70,6 +70,8 @@ class Member(models.Model):
 
     @property
     def avatar_url(self):
+        if self.avatar is None:
+            return None
         return self.avatar.url
 
 
@@ -102,6 +104,14 @@ class Feed(models.Model):
     @property
     def downloaded_media(self):
         return self.media.exclude(filename=None)
+
+    @property
+    def readable_type(self):
+        mapping = {
+            'instagram_v2': 'Instagram',
+        }
+
+        return mapping.get(self.type, self.type.capitalize())
 
 
 class Media(models.Model):

@@ -27,7 +27,7 @@ DEBUG = False
 if os.getenv('DEBUG') == 'on':
     DEBUG = True
 
-ALLOWED_HOSTS = ['buzzbird.cnspurs.com']
+ALLOWED_HOSTS = ['buzzbird.cnspurs.com', 'api.spursnews.net']
 if DEBUG:
     ALLOWED_HOSTS += ['127.0.0.1']
 
@@ -135,8 +135,9 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'default': {
-            'format': '{asctime} {levelname} {name}.{funcName} {message}',
-            'style': '{',
+            # 'format': '{asctime} {levelname} {name}.{funcName} {message}',
+            'format': '%(asctime)s %(levelname)s [%(name)s:%(lineno)s] %(module)s %(process)d %(thread)d %(message)s',
+            # 'style': '{',
         },
     },
     'filters': {
