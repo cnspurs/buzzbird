@@ -81,6 +81,13 @@ class WeiboPost:
             urls.append(thumbnail_url.replace('/thumbnail/', '/large/'))
         return urls
 
+    @property
+    def pic_urls_v2(self) -> list:
+        if self.status.get('pics'):
+            return [pic_info['large']['url'] for pic_info in self.status['pics']]
+        else:
+            return []
+
 
 def get_home_timeline(profile: Profile):
     url = 'https://api.weibo.com/2/statuses/home_timeline.json'
