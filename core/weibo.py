@@ -95,13 +95,13 @@ def get_home_timeline(profile: Profile):
     return r.json()
 
 
-def get_or_create_user(post: WeiboPost) -> Member:
-    wm, created = Member.objects.get_or_create(chinese_name=post.author)
+def get_or_create_user(user_id: str, username: str, avatar_url: str) -> Member:
+    wm, created = Member.objects.get_or_create(chinese_name=username)
     if created:
-        wm.weibo_id = post.user['idstr']
+        wm.weibo_id = user_id
 
         # Now the avatar won't be updated after this Member is created
-        avatar = Media.objects.create(original_url=post.user['avatar_hd'])
+        avatar = Media.objects.create(original_url=avatar_url)
         wm.avatar = avatar
         async_task(avatar.download_to_local)
 
@@ -137,7 +137,7 @@ def save_contents():
         if post.user['id'] == 5833511420:
             continue
 
-        user = get_or_create_user(post)
+        user = get_or_create_user(post.user['idstr'], post.author, post.user['avatar_hd'])
         _, created = save_content(user, post)
         if not created:
             break
