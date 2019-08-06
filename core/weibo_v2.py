@@ -4,16 +4,16 @@ import requests
 url = 'https://m.weibo.cn/api/container/getIndex'
 
 
-def standardize_info(info_dict):
+def standardize_info(info_dict: dict) -> dict:
     for k, v in info_dict.items():
         if 'int' not in str(type(v)) and 'long' not in str(type(v)) and 'bool' not in str(type(v)):
             info_dict[k] = v.replace(u"\u200b", "").encode(sys.stdout.encoding, "ignore").decode(sys.stdout.encoding)
     return info_dict
 
 
-def get_user_info(user_id):
+def get_user_info(user_id: int) -> dict or None:
     data = {
-        'containerid': '100505' + user_id
+        'containerid': '100505' + str(user_id)
     }
     r = requests.get(url, data)
     json = r.json()

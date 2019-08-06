@@ -95,10 +95,10 @@ def get_home_timeline(profile: Profile):
     return r.json()
 
 
-def get_or_create_user(user_id: str, username: str, avatar_url: str) -> Member:
+def get_or_create_user(user_id: int, username: str, avatar_url: str) -> Member:
     wm, created = Member.objects.get_or_create(chinese_name=username)
     if created:
-        wm.weibo_id = user_id
+        wm.weibo_id = str(user_id)
 
         # Now the avatar won't be updated after this Member is created
         avatar = Media.objects.create(original_url=avatar_url)
