@@ -1,10 +1,10 @@
 import sys
 import json
-import requests
 from datetime import datetime, timedelta
 
-from core.models import Member
 from core import weibo
+from core.models import Member
+from core.utils import requests_get
 
 url = 'https://m.weibo.cn/api/container/getIndex'
 
@@ -20,7 +20,7 @@ def get_user_info(user_id: int) -> dict or None:
     data = {
         'containerid': '100505' + str(user_id)
     }
-    r = requests.get(url, data)
+    r = requests_get(url, data)
     returned_json = r.json()
 
     if not returned_json['ok']:
@@ -35,7 +35,7 @@ def get_user_info(user_id: int) -> dict or None:
 
 def get_long_weibo(weibo_id_str: str) -> dict:
     long_weibo_url = f'https://m.weibo.cn/detail/{weibo_id_str}'
-    html = requests.get(long_weibo_url).text
+    html = requests_get(long_weibo_url).text
     html = html[html.find('"status":'):]
     html = html[:html.rfind('"hotScheme"')]
     html = html[:html.rfind(',')]
@@ -49,7 +49,7 @@ def get_one_page(weibo_id_str: str, page_id: int) -> list or None:
         'containerid': '107603' + weibo_id_str,
         'page': page_id
     }
-    r = requests.get(url, data)
+    r = requests_get(url, data)
     returned_json = r.json()
 
     if not returned_json['ok']:
@@ -58,7 +58,7 @@ def get_one_page(weibo_id_str: str, page_id: int) -> list or None:
     weibo_cards = returned_json['data']['cards']
     weibo_posts = []
     for weibo_card in weibo_cards:
-        if weibo_card['card_type'] == 9:
+        if weibo_card['card_type'] != 9:
             continue
 
         weibo_post_info = weibo_card['mblog']
