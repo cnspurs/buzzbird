@@ -77,7 +77,7 @@ def get_one_page(weibo_id_str: str, page_id: int) -> list or None:
             weibo_post_info = get_long_weibo(weibo_post_id_str)
             post = weibo.WeiboPost(standardize_info(weibo_post_info['status']))
         else:
-            post = weibo.WeiboPost(standardize_info(weibo_post_info['mblog']))
+            post = weibo.WeiboPost(standardize_info(weibo_post_info))
         weibo_posts.append(post)
 
     return weibo_posts
