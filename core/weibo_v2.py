@@ -1,5 +1,7 @@
 import sys
 import json
+import random
+from time import sleep
 from datetime import datetime, timedelta
 
 from core import weibo
@@ -106,3 +108,6 @@ def save_contents() -> None:
                 if not created:
                     found_saved = True
                     break
+
+            # Adds random waiting to avoid restriction
+            sleep(random.randint(3, 5))
