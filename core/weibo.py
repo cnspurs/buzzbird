@@ -41,17 +41,17 @@ def mid_to_url(mid):
 
 
 def standardize_date(created_at: str) -> datetime:
-    if u"刚刚" in created_at:
+    if '刚刚' in created_at:
         return datetime.now()
-    if u"分钟" in created_at:
+    if '分钟' in created_at:
         num_minutes = int(created_at[:created_at.find(u"分钟")])
         delta = timedelta(minutes=num_minutes)
         return datetime.now() - delta
-    if u"小时" in created_at:
+    if '小时' in created_at:
         num_hours = int(created_at[:created_at.find(u"小时")])
         delta = timedelta(hours=num_hours)
         return datetime.now() - delta
-    if u"昨天" in created_at:
+    if '昨天' in created_at:
         delta = timedelta(days=1)
         return datetime.now() - delta
     return parse(created_at)
