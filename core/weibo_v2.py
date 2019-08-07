@@ -40,8 +40,8 @@ def get_long_weibo(weibo_id_str: str) -> dict:
     html = html[:html.rfind('"hotScheme"')]
     html = html[:html.rfind(',')]
     html = '{' + html + '}'
-    weibo_info = json.loads(html, strict=False)
-    return weibo_info
+    returned_json = json.loads(html, strict=False)
+    return returned_json['status']
 
 
 def get_one_page(weibo_id_str: str, page_id: int) -> list or None:
@@ -75,7 +75,7 @@ def get_one_page(weibo_id_str: str, page_id: int) -> list or None:
         if weibo_post_info['isLongText']:
             weibo_post_id_str: str = weibo_post_info['id']
             weibo_post_info = get_long_weibo(weibo_post_id_str)
-            post = weibo.WeiboPost(weibo_post_info['status'])
+            post = weibo.WeiboPost(weibo_post_info)
         else:
             post = weibo.WeiboPost(weibo_post_info)
         weibo_posts.append(post)
