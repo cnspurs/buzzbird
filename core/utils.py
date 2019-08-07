@@ -185,4 +185,5 @@ def requests_get(url: str, params: dict = None, **kwargs) -> requests.models.Res
         r = requests.get(url, params, **kwargs)
         return r
     except requests.exceptions.Timeout:
+        # TODO: Handle the time out
         return None
