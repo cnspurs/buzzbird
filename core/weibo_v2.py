@@ -64,7 +64,7 @@ def get_one_page(weibo_id_str: str, page_id: int) -> list or None:
         weibo_post_info = weibo_card['mblog']
         # Skips sticky post
         # TODO: return sticky post if it has not been saved
-        if weibo_post_info['isTop']:
+        if weibo_post_info.get('isTop'):
             continue
         # Skips retweeted posts
         # TODO: expect Jedi to forget about this
