@@ -174,14 +174,15 @@ class Status:
 twitter = TwitterAPI(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET, tweet_mode='extended')
 
 
-def requests_get(url: str, data: dict) -> requests.models.Response or None:
-    headers = {
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                      'Chrome/69.0.3497.100 Safari/537.36'
-    }
+def requests_get(url: str, params: dict = None, **kwargs) -> requests.models.Response or None:
+    if 'headers' not in kwargs or type(kwargs['headers']) is not dict:
+        kwargs['headers'] = {}
+    kwargs['headers']['user-agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' \
+                                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'
+    kwargs['timeout'] = 1
 
     try:
-        r = requests.get(url, data, headers=headers, timeout=1)
+        r = requests.get(url, params, **kwargs)
         return r
     except requests.exceptions.Timeout:
         return None
