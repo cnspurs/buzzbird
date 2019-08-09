@@ -92,7 +92,7 @@ class Feed(models.Model):
     is_discourse = models.BooleanField('Published to discourse?', default=False)
     is_video = models.BooleanField(default=False)
     link = models.URLField(db_index=True, null=True)
-    created_at = models.DateTimeField()
+    created_at = models.DateTimeField(db_index=True)
     title = models.CharField(blank=True, max_length=1024)
     user = models.ForeignKey('core.Member', related_name='posts', null=True, on_delete=models.SET_NULL)
     type = models.CharField(max_length=16, choices=FEED_TYPES)
