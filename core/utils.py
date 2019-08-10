@@ -179,7 +179,7 @@ def requests_get(url: str, params: dict = None, **kwargs) -> requests.models.Res
         kwargs['headers'] = {}
     kwargs['headers']['user-agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' \
                                       'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'
-    kwargs['timeout'] = 1
+    kwargs['timeout'] = 10
 
     try:
         r = requests.get(url, params, **kwargs)
