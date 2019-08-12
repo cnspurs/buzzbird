@@ -223,6 +223,7 @@ weibo_app_id = os.getenv('WEIBO_APP_ID')
 weibo_app_secret = os.getenv('WEIBO_APP_SECRET')
 weibo_redirect_uri = os.getenv('WEIBO_REDIRECT_URI')
 WEIBO = OAuthWeibo(weibo_app_id, weibo_app_secret, weibo_redirect_uri)
+WEIBO_BUZZBIRD_ID = os.getenv('WEIBO_BUZZBIRD_ID', '')
 
 ROLLBAR = {
     'access_token': os.getenv('ROLLBAR_ACCESS_TOKEN'),

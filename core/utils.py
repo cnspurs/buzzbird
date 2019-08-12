@@ -5,7 +5,9 @@ from io import BytesIO
 import requests
 import twitter as t
 
-from core.models import Member
+from django.conf import settings
+
+from core.models import Member, Profile
 from core.schema import Weibo
 
 logger = logging.getLogger('core.utils')
@@ -14,6 +16,11 @@ CONSUMER_KEY = os.getenv('TWITTER_CONSUMER_KEY')
 CONSUMER_SECRET = os.getenv('TWITTER_CONSUMER_SECRET')
 ACCESS_TOKEN_KEY = os.getenv('TWITTER_ACCESS_TOKEN_KEY')
 ACCESS_TOKEN_SECRET = os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
+
+
+def get_weibo_access_token() -> str:
+    profile = Profile.objects.get(user__username=settings.WEIBO_BUZZBIRD_ID)
+    return profile.access_token
 
 
 class TwitterAPI:
@@ -29,6 +36,10 @@ class TwitterAPI:
         members = self._api.GetListMembers(list_id, **kwargs)
 
         return members
+
+    def get_userid(self, username):
+        user: t.User = self._api.GetUser(screen_name=username)
+        return user.id_str
 
 
 class Status:

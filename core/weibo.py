@@ -1,10 +1,11 @@
 import logging
 
-from dateutil.parser import parse
 import requests
 
+from dateutil.parser import parse
 from django_q.tasks import async_task
 
+from core import utils
 from core.models import Profile, Feed, Member, Media
 
 logger = logging.getLogger('core.weibo')
@@ -141,3 +142,17 @@ def save_contents():
         _, created = save_content(user, post)
         if not created:
             break
+
+
+def get_userid(screen_name):
+    url = 'https://api.weibo.com/2/users/show.json'
+    access_token = utils.get_weibo_access_token()
+    params = {
+        'screen_name': screen_name,
+        'access_token': access_token,
+    }
+    r = requests.get(url=url, params=params, timeout=10)
+    if r.status_code == 200:
+        return r.json()['id_str']
+    else:
+        raise Exception(f'Failed to get {screen_name} user_id. message: {r.text}')

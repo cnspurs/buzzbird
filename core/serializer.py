@@ -28,3 +28,18 @@ class FeedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feed
         exclude = ('metadata', 'is_buzzbird', 'is_discourse', 'author')
+
+
+class QueryUserSerializer(serializers.Serializer):
+    type = serializers.CharField(required=True)
+    username = serializers.CharField(required=True)
+
+    def validate_type(self, value):
+        types = [
+            'instagram',
+            'twitter',
+            'weibo',
+        ]
+        if value not in types:
+            raise serializers.ValidationError('Invalid type')
+        return value
