@@ -1,5 +1,6 @@
 import logging
 
+from datetime import datetime, timedelta
 from dateutil.parser import parse
 import requests
 
@@ -39,6 +40,23 @@ def mid_to_url(mid):
     return ''.join(result)
 
 
+def standardize_date(created_at: str) -> datetime:
+    if '刚刚' in created_at:
+        return datetime.now()
+    if '分钟' in created_at:
+        num_minutes = int(created_at[:created_at.find(u"分钟")])
+        delta = timedelta(minutes=num_minutes)
+        return datetime.now() - delta
+    if '小时' in created_at:
+        num_hours = int(created_at[:created_at.find(u"小时")])
+        delta = timedelta(hours=num_hours)
+        return datetime.now() - delta
+    if '昨天' in created_at:
+        delta = timedelta(days=1)
+        return datetime.now() - delta
+    return parse(created_at)
+
+
 class WeiboPost:
     def __init__(self, status):
         self.status = status
@@ -63,9 +81,14 @@ class WeiboPost:
     def text(self):
         return self.status['text']
 
-    @property
-    def created_at(self):
+    def created_at(self, version) -> datetime:
+        if version == 2:
+            return self.created_at_v2
         return parse(self.status['created_at'])
+
+    @property
+    def created_at_v2(self) -> datetime:
+        return standardize_date(self.status['created_at'])
 
     @property
     def url(self):
@@ -73,13 +96,22 @@ class WeiboPost:
         post_url = f'https://weibo.com/{user_id}/{mid_to_url(self.mid)}'
         return post_url
 
-    @property
-    def pic_urls(self):
+    def pic_urls(self, version) -> list:
+        if version == 2:
+            return self.pic_urls_v2
+
         urls = []
         for item in self.status['pic_urls']:
             thumbnail_url = item['thumbnail_pic']
             urls.append(thumbnail_url.replace('/thumbnail/', '/large/'))
         return urls
+
+    @property
+    def pic_urls_v2(self) -> list:
+        if self.status.get('pics'):
+            return [pic_info['large']['url'] for pic_info in self.status['pics']]
+        else:
+            return []
 
 
 def get_home_timeline(profile: Profile):
@@ -95,13 +127,13 @@ def get_home_timeline(profile: Profile):
     return r.json()
 
 
-def get_or_create_user(post: WeiboPost) -> Member:
-    wm, created = Member.objects.get_or_create(chinese_name=post.author)
+def get_or_create_user(user_id: int, username: str, avatar_url: str) -> Member:
+    wm, created = Member.objects.get_or_create(chinese_name=username)
     if created:
-        wm.weibo_id = post.user['idstr']
+        wm.weibo_id = str(user_id)
 
         # Now the avatar won't be updated after this Member is created
-        avatar = Media.objects.create(original_url=post.user['avatar_hd'])
+        avatar = Media.objects.create(original_url=avatar_url)
         wm.avatar = avatar
         async_task(avatar.download_to_local)
 
@@ -109,15 +141,15 @@ def get_or_create_user(post: WeiboPost) -> Member:
     return wm
 
 
-def save_content(user: Member, post: WeiboPost) -> (Feed, bool):
+def save_content(user: Member, post: WeiboPost, version: int = 1) -> (Feed, bool):
     weibo = Feed.objects.weibo().filter(status_id=post.id).first()
     if weibo:
         return weibo, False
 
-    weibo = Feed.objects.create(author=post.author, link=post.url, created_at=post.created_at, title=post.text,
+    weibo = Feed.objects.create(author=post.author, link=post.url, created_at=post.created_at(version), title=post.text,
                                 user=user, type='weibo', metadata=post.status, status_id=post.id)
 
-    for url in post.pic_urls:
+    for url in post.pic_urls(version):
         media = Media.objects.create(feed=weibo, original_url=url)
         async_task(media.download_to_local)
 
@@ -137,7 +169,7 @@ def save_contents():
         if post.user['id'] == 5833511420:
             continue
 
-        user = get_or_create_user(post)
+        user = get_or_create_user(post.user['idstr'], post.author, post.user['avatar_hd'])
         _, created = save_content(user, post)
         if not created:
             break
