@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand
-from django_q.tasks import async_task
 
 from core.models import *
 
