@@ -12,7 +12,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         feeds = Feed.objects.all().exclude(type='twitter', media_url=None).prefetch_related('media')
         for feed in feeds:
-            media = Media.objects.filter(feed=feed, original_url=feed.media_url)
+            media = Media.objects.filter(feed=feed)
             if media:
                 for m in media:
                     if m.downloaded is False:
