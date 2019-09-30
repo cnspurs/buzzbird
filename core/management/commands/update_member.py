@@ -20,7 +20,7 @@ class Command(BaseCommand):
         member = Member.objects.filter(id=member_id).first()
 
         if member:
-            for k, v in kwargs:
+            for k, v in kwargs.items():
                 setattr(member, f'{k}_id', v)
             member.save()
 
