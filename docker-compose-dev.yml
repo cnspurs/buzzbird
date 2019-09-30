@@ -19,6 +19,8 @@ services:
       - .env
     ports:
       - 3000:3000
+    volumes:
+      - .:/usr/src/app
     expose:
       - 3000
     build: .
