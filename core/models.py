@@ -62,7 +62,7 @@ class Member(models.Model):
     objects = FeedManager()
 
     def __str__(self):
-        return f'{self.english_name, self.chinese_name}'
+        return f'{self.id, self.english_name, self.chinese_name}'
 
     @property
     def name(self):
