@@ -84,7 +84,7 @@ def save_content(user: Member, post: instaloader.Post) -> Feed or None:
 
 
 def save_contents():
-    members = Member.objects.exclude(instagram_id=None)
+    members = Member.objects.exclude(instagram_id=None, archived=True)
     for member in members:
         instagram_id = int(member.instagram_id)
         profile = instaloader.Profile.from_id(ins.context, instagram_id)
@@ -100,7 +100,7 @@ def save_contents():
             save_content(member, post)
 
 
-def ig_to_weibo(ig: Feed):
+def ig_to_weibo(ig: Feed) -> Weibo:
     text = f'【{ig.user.chinese_name} Ins】{ig.title[:110]}... https://spursnews.net/weibo/instagrams/{ig.id}'
     media = None
     if ig.media.count() > 0:

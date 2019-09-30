@@ -86,7 +86,7 @@ def get_one_page(weibo_id_str: str, page_id: int) -> list or None:
 
 
 def save_contents() -> None:
-    weibo_members = Member.objects.exclude(weibo_id=None)
+    weibo_members = Member.objects.exclude(weibo_id=None, archived=True)
     for weibo_member in weibo_members:
         weibo_id_str: str = weibo_member.weibo_id
 
