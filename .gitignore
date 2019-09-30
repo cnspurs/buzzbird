@@ -1,3 +1,5 @@
+htmlcov/
+static/
 .env
 .envrc
 .idea
