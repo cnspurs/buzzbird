@@ -28,6 +28,7 @@ class MemberAdmin(admin.ModelAdmin):
         'chinese_name',
         'twitter_id',
         'instagram_id',
+        'weibo_id',
     )
     actions = [make_archived, make_unarchived]
 
