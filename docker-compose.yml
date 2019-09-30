@@ -1,12 +1,14 @@
-version: '3.3'
+version: '3.5'
 
 services:
   db:
     env_file:
       - .env
-    image: postgres:latest
+    image: postgres:10.10
     restart: always
     hostname: db
+    volumes:
+      - .:/usr/src/app
     expose:
       - 5432
     environment:
@@ -33,6 +35,8 @@ services:
   worker:
     env_file:
       - .env
+    volumes:
+      - .:/usr/src/app
     restart: always
     build: .
     depends_on:

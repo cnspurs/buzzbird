@@ -5,8 +5,8 @@ services:
     env_file:
       - .env
     image: postgres:10.10
-    expose:
-      - 5432
+    ports:
+      - 5432:5432
     environment:
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
       - POSTGRES_USER=${DATABASE_USERNAME}
