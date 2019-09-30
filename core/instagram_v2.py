@@ -1,8 +1,8 @@
+import datetime as dt
 import logging
 import os
 
 import instaloader
-from dateutil.parser import parse
 from django.conf import settings
 from django.utils import timezone
 from django_q.tasks import async_task
@@ -15,16 +15,26 @@ logger = logging.getLogger('core.instagram_v2')
 
 ins = instaloader.Instaloader()
 session_name = os.path.join(settings.INSTAGRAM_SESSION_DIR, settings.INSTAGRAM_NAME)
-try:
-    ins.load_session_from_file(settings.INSTAGRAM_NAME, session_name)
-except FileNotFoundError:
-    logger.warning('No session file. Will log in Instagram via user/password.')
+
+exist = os.path.exists(session_name)
+login = True
+if exist:
+    ctime = os.path.getctime(session_name)
+    ctime = dt.datetime.fromtimestamp(ctime)
+    diff = dt.datetime.now() - ctime
+    if diff.days < 1:
+        login = False
+        ins.load_session_from_file(settings.INSTAGRAM_NAME, session_name)
+
+if login:
     ins.login(settings.INSTAGRAM_NAME, settings.INSTAGRAM_PASSWORD)
     ins.save_session_to_file(session_name)
 
 
 def create_user(profile: instaloader.Post) -> Member:
-    im, created = Member.objects.get_or_create(english_name=profile.owner_profile.full_name)
+    im, created = Member.objects.get_or_create(
+        english_name=profile.owner_profile.full_name
+    )
     if created:
         im.instagram_id = str(profile.owner_id)
         im.save(update_fields=['instagram_id'])
@@ -43,9 +53,15 @@ def save_content(user: Member, post: instaloader.Post) -> Feed or None:
     caption = ''
     if post.caption is not None:
         caption = post.caption
-    ig = Feed.objects.create(author=profile.username, created_at=created_at, title=caption, user=user,
-                             type='instagram_v2', status_id=post.shortcode,
-                             link=f'https://www.instagram.com/p/{post.shortcode}')
+    ig = Feed.objects.create(
+        author=profile.username,
+        created_at=created_at,
+        title=caption,
+        user=user,
+        type='instagram_v2',
+        status_id=post.shortcode,
+        link=f'https://www.instagram.com/p/{post.shortcode}',
+    )
 
     # Only an image
     if post.typename == 'GraphImage':
@@ -61,7 +77,7 @@ def save_content(user: Member, post: instaloader.Post) -> Feed or None:
     elif post.typename == 'GraphVideo':
         ig.is_video = True
         ig.save(update_fields=['is_video'])
-        m = Media.objects.create(feed=ig, original_url=post.url, )
+        m = Media.objects.create(feed=ig, original_url=post.url)
 
     logger.info(f'Instagram: {ig} saved')
     return ig
@@ -77,7 +93,9 @@ def save_contents():
             two_days_before = timezone.now() + timezone.timedelta(days=-1)
             created_at = post.date.replace(tzinfo=timezone.utc)
             if created_at < two_days_before:
-                logger.info(f'Instagram: https://instagram.com/p/{post.shortcode} is too old.')
+                logger.info(
+                    f'Instagram: https://instagram.com/p/{post.shortcode} is too old.'
+                )
                 break
             save_content(member, post)
 
