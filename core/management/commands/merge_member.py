@@ -24,6 +24,15 @@ class Command(BaseCommand):
 
         if source_user and target_user:
             Feed.objects.filter(user=source_user).update(user=target_user)
+
+            if not target_user.weibo_id and source_user.weibo_id:
+                target_user.weibo_id = source_user.weibo_id
+            if not target_user.twitter_id and source_user.twitter_id:
+                target_user.twitter_id = source_user.twitter_id
+            if not target_user.instagram_id and source_user.instagram_id:
+                target_user.instagram_id = source_user.instagram_id
+
+            target_user.save()
             source_user.delete()
 
         else:
