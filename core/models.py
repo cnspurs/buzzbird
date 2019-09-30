@@ -59,6 +59,9 @@ class Member(models.Model):
     twitter_id = models.CharField(max_length=128, null=True)
     weibo_id = models.CharField(max_length=64, null=True)
 
+    # archived means will no longer collect his feeds
+    archived = models.BooleanField(default=False)
+
     objects = FeedManager()
 
     def __str__(self):
@@ -94,7 +97,9 @@ class Feed(models.Model):
     link = models.URLField(db_index=True, null=True)
     created_at = models.DateTimeField(db_index=True)
     title = models.CharField(blank=True, max_length=1024)
-    user = models.ForeignKey('core.Member', related_name='posts', null=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(
+        'core.Member', related_name='posts', null=True, on_delete=models.SET_NULL
+    )
     type = models.CharField(max_length=16, choices=FEED_TYPES)
     metadata = JSONField(null=True)
     status_id = models.CharField(max_length=128, null=True, db_index=True)
@@ -107,16 +112,16 @@ class Feed(models.Model):
 
     @property
     def readable_type(self):
-        mapping = {
-            'instagram_v2': 'Instagram',
-        }
+        mapping = {'instagram_v2': 'Instagram'}
 
         return mapping.get(self.type, self.type.capitalize())
 
 
 class Media(models.Model):
     date = models.DateField(auto_now_add=True)
-    feed = models.ForeignKey('core.Feed', related_name='media', null=True, on_delete=models.SET_NULL)
+    feed = models.ForeignKey(
+        'core.Feed', related_name='media', null=True, on_delete=models.SET_NULL
+    )
     filename = models.CharField(max_length=512, null=True)
     original_url = models.URLField(max_length=1024)
 
@@ -170,7 +175,7 @@ class Media(models.Model):
 
         headers = {
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) '
-                          'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
+            'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'
         }
         r = requests.get(self.original_url, timeout=3, headers=headers)
         with open(path, 'wb') as f:
