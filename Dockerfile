@@ -1,6 +1,12 @@
-FROM kennethreitz/pipenv:latest
+FROM python:3.7.6-slim
 
-LABEL Name=buzzbird Version=0.0.1
+LABEL Name=buzzbird Version=0.1.0
+
+RUN pip install poetry==1.0.2
+RUN poetry config virtualenvs.create false
+COPY poetry.lock pyproject.toml /app/
+WORKDIR /app
+RUN poetry install -n
 
 RUN groupadd -r www -g 1000 && useradd -u 1000 -r -g www -s /sbin/nologin www
 RUN mkdir -p /usr/src/app/logs/django
