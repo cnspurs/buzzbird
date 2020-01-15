@@ -173,6 +173,23 @@ version = "0.18.2"
 
 [[package]]
 category = "main"
+description = "WSGI HTTP Server for UNIX"
+name = "gunicorn"
+optional = false
+python-versions = ">=3.4"
+version = "20.0.4"
+
+[package.dependencies]
+setuptools = ">=3.0"
+
+[package.extras]
+eventlet = ["eventlet (>=0.9.7)"]
+gevent = ["gevent (>=0.13)"]
+setproctitle = ["setproctitle"]
+tornado = ["tornado (>=0.2)"]
+
+[[package]]
+category = "main"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
 optional = false
@@ -629,7 +646,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "contextlib2", "unittest2"]
 
 [metadata]
-content-hash = "9a89674698437a4d5ca70b5e68b8445d1f3ed088ee2373c30aa2da0a2046102d"
+content-hash = "7a0fe0a44e3a9a366838c27172ef6d33a511b531413d561d0a9591eaa30fecf3"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -695,6 +712,10 @@ djangorestframework = [
 ]
 future = [
     {file = "future-0.18.2.tar.gz", hash = "sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d"},
+]
+gunicorn = [
+    {file = "gunicorn-20.0.4-py2.py3-none-any.whl", hash = "sha256:cd4a810dd51bf497552cf3f863b575dabd73d6ad6a91075b65936b151cbf4f9c"},
+    {file = "gunicorn-20.0.4.tar.gz", hash = "sha256:1904bb2b8a43658807108d59c3f3d56c2b6121a701161de0ddf9ad140073c626"},
 ]
 idna = [
     {file = "idna-2.8-py2.py3-none-any.whl", hash = "sha256:ea8b7f6188e6fa117537c3df7da9fc686d485087abf6ac197f9c46432f7e4a3c"},
