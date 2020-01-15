@@ -52,7 +52,9 @@ class Profile(models.Model):
 
 
 class Member(models.Model):
-    avatar = models.OneToOneField("core.Media", null=True, on_delete=models.SET_NULL)
+    avatar = models.OneToOneField(
+        "core.Media", null=True, blank=True, on_delete=models.CASCADE
+    )
     english_name = models.CharField(max_length=64)
     chinese_name = models.CharField(max_length=16)
     instagram_id = models.CharField(max_length=64, blank=True)
@@ -98,7 +100,11 @@ class Feed(models.Model):
     created_at = models.DateTimeField(db_index=True)
     title = models.CharField(blank=True, max_length=1024)
     user = models.ForeignKey(
-        "core.Member", related_name="posts", null=True, on_delete=models.SET_NULL
+        "core.Member",
+        related_name="posts",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
     )
     type = models.CharField(max_length=16, choices=FEED_TYPES)
     metadata = JSONField(blank=True)
@@ -120,7 +126,11 @@ class Feed(models.Model):
 class Media(models.Model):
     date = models.DateField(auto_now_add=True)
     feed = models.ForeignKey(
-        "core.Feed", related_name="media", null=True, on_delete=models.SET_NULL
+        "core.Feed",
+        related_name="media",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
     )
     filename = models.CharField(max_length=512, blank=True)
     original_url = models.URLField(max_length=1024)
