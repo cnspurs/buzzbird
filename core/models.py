@@ -114,7 +114,7 @@ class Feed(models.Model):
 
     @property
     def downloaded_media(self):
-        return self.media.exclude(filename=None)
+        return self.media.exclude(filename='')
 
     @property
     def readable_type(self):

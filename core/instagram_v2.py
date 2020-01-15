@@ -84,7 +84,7 @@ def save_content(user: Member, post: instaloader.Post) -> Feed or None:
 
 
 def save_contents():
-    members = Member.objects.exclude(instagram_id=None).filter(archived=False)
+    members = Member.objects.exclude(instagram_id='').filter(archived=False)
     for member in members:
         instagram_id = int(member.instagram_id)
         profile = instaloader.Profile.from_id(ins.context, instagram_id)
