@@ -8,6 +8,9 @@ COPY poetry.lock pyproject.toml /app/
 WORKDIR /app
 RUN poetry install -n
 
+RUN apt-get update
+RUN apt-get install -y netcat
+
 RUN groupadd -r www -g 1000 && useradd -u 1000 -r -g www -s /sbin/nologin www
 RUN mkdir -p /usr/src/app/logs/django
 RUN mkdir -p /usr/src/app/static/media
