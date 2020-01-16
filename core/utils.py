@@ -164,7 +164,7 @@ class Status:
     @property
     def link(self):
         if self._status.media is None:
-            return None
+            return ''
         return self._status.media[0].url
 
     @property
