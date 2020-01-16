@@ -96,7 +96,7 @@ class Feed(models.Model):
     is_buzzbird = models.BooleanField("Published to buzzbird Weibo?", default=False)
     is_discourse = models.BooleanField("Published to discourse?", default=False)
     is_video = models.BooleanField(default=False)
-    link = models.URLField(db_index=True, blank=True)
+    link = models.URLField(db_index=True, blank=True, default='')
     created_at = models.DateTimeField(db_index=True)
     title = models.CharField(blank=True, max_length=1024)
     user = models.ForeignKey(
@@ -107,8 +107,8 @@ class Feed(models.Model):
         on_delete=models.SET_NULL,
     )
     type = models.CharField(max_length=16, choices=FEED_TYPES)
-    metadata = JSONField(blank=True)
-    status_id = models.CharField(max_length=128, blank=True, db_index=True)
+    metadata = JSONField(blank=True, default=dict)
+    status_id = models.CharField(max_length=128, blank=True, db_index=True, default='')
 
     objects = FeedManager()
 
