@@ -165,7 +165,7 @@ class Status:
     def link(self):
         if self._status.media is None:
             return ''
-        return self._status.media[0].url
+        return self._status.media[0].url or ''  # if None it will return empty string
 
     @property
     def author(self):
