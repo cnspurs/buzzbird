@@ -32,7 +32,9 @@ class FeedSerializer(serializers.ModelSerializer):
 
 class QueryUserSerializer(serializers.Serializer):
     type = serializers.CharField(required=True)
-    username = serializers.CharField(required=True)
+    url = serializers.CharField(required=True)
+
+    # TODO: validate if it is an URL
 
     def validate_type(self, value):
         types = [
