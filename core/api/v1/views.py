@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 import instaloader
 
 from rest_framework import generics
@@ -74,7 +76,10 @@ def query_user_id(request):
         return Response({'errors': serializer.errors}, status=status.HTTP_404_NOT_FOUND)
 
     type = serializer.data['type']
-    username = serializer.data['username']
+    url = serializer.data['url']
+
+    parse_result = urlparse(url)
+    username = parse_result.path.strip('/')
 
     if type == 'instagram':
         try:
