@@ -76,7 +76,7 @@ def get_image(url):
 
 
 def twitter_to_weibo(twitter: Feed):
-    text = f"【{twitter.user.name} 推特】{twitter.title[:120]} ... https://spursnews.net/feeds/{twitter.id}"
+    text = f"【{twitter.user.name} 推特】{twitter.title[:140]} ... https://spursnews.net/feeds/{twitter.id}"
     media = None
     if twitter.media.count() > 0:
         media = twitter.media.all()[0]

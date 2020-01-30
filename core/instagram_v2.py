@@ -101,7 +101,7 @@ def save_contents():
 
 
 def ig_to_weibo(ig: Feed) -> Weibo or None:
-    text = f"【{ig.user.name} Ins】{ig.title[:120]} ... https://spursnews.net/feeds/{ig.id}"
+    text = f"【{ig.user.name} Ins】{ig.title[:140]} ... https://spursnews.net/feeds/{ig.id}"
     media = None
     if ig.media.count() > 0:
         media = ig.media.all()[0]
