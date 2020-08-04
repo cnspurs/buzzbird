@@ -218,7 +218,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(STATIC_ROOT, 'media')
 CDN_URL = 'https://static.spursnews.net/'
 MEDIA_URL = CDN_URL + 'media/'
-BUZZBIRD_FEED_URL = 'https://feeds.spursnews.net'
+BUZZBIRD_FEED_URL = os.getenv('BUZZBIRD_FEED_URL', 'https://feeds.spursnews.net')
 
 weibo_app_id = os.getenv('WEIBO_APP_ID')
 weibo_app_secret = os.getenv('WEIBO_APP_SECRET')
