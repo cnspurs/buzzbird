@@ -74,16 +74,3 @@ def get_image(url):
     r = requests.get(url)
     image_data = io.BytesIO(r.content)
     return image_data
-
-
-def twitter_to_weibo(twitter: Feed):
-    text = f"【{twitter.user.name} 推特】{twitter.title[:140]} ... {settings.BUZZBIRD_FEED_URL}/{twitter.id}"
-    media = None
-    if twitter.media.count() > 0:
-        media = twitter.media.all()[0]
-    data = {
-        "text": text,
-        "pic": func.get_local_image(media.local_path) if media is not None else None,
-        "tweet_id": twitter.id,
-    }
-    return Weibo(**data)

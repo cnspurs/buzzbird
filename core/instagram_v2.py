@@ -89,24 +89,6 @@ def save_contents():
             save_content(member, post)
 
 
-def ig_to_weibo(ig: Feed) -> Weibo or None:
-    text = f"【{ig.user.name} Ins】{ig.title[:140]} ... {settings.BUZZBIRD_FEED_URL}/{ig.id}"
-    media = None
-    if ig.media.count() > 0:
-        media = ig.media.all()[0]
-
-    if media is None:
-        logger.info(f"{ig.type} {ig.id} missing media. Stop generating Weibo data.")
-        return None
-
-    data = {
-        "text": text,
-        "pic": func.get_local_image(media.local_path),
-        "tweet_id": ig.id,
-    }
-    return Weibo(**data)
-
-
 def convert_username_to_id(username) -> str or None:
     ins = get_ins()
 
