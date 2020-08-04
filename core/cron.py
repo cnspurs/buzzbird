@@ -11,16 +11,6 @@ logger = logging.getLogger("core.cron")
 oauth_weibo = settings.WEIBO
 
 
-def sync_instagram_to_discourse():
-    qs = Feed.objects.instagram().filter(is_discourse=False).order_by("created_at")
-    for ig in qs:
-        result = instagram.send_to_discourse_as_post(ig)
-        if result:
-            ig.is_discourse = True
-            ig.save()
-            logger.info(f"Instagram synced to discourse: {ig.author}, {ig.title}")
-
-
 def sync_twitter_to_buzzbird():
     profile = Profile.objects.filter(user__username="5833511420").first()
     qs = (
