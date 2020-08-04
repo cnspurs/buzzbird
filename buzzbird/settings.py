@@ -27,7 +27,7 @@ DEBUG = False
 if os.getenv('DEBUG') == 'on':
     DEBUG = True
 
-ALLOWED_HOSTS = ['buzzbird.cnspurs.com', 'api.spursnews.net']
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
 if DEBUG:
     ALLOWED_HOSTS += ['127.0.0.1']
 
