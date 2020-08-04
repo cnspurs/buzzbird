@@ -1,6 +1,4 @@
-import datetime as dt
 import logging
-import os
 
 import instaloader
 from django.conf import settings
@@ -13,22 +11,12 @@ from core.schema import Weibo
 
 logger = logging.getLogger("core.instagram_v2")
 
-ins = instaloader.Instaloader()
-session_name = os.path.join(settings.INSTAGRAM_SESSION_DIR, settings.INSTAGRAM_NAME)
 
-exist = os.path.exists(session_name)
-login = True
-if exist:
-    ctime = os.path.getctime(session_name)
-    ctime = dt.datetime.fromtimestamp(ctime)
-    diff = dt.datetime.now() - ctime
-    if diff.days < 1:
-        login = False
-        ins.load_session_from_file(settings.INSTAGRAM_NAME, session_name)
-
-if login:
+def get_ins():
+    ins = instaloader.Instaloader()
     ins.login(settings.INSTAGRAM_NAME, settings.INSTAGRAM_PASSWORD)
-    ins.save_session_to_file(session_name)
+
+    return ins
 
 
 def create_user(profile: instaloader.Post) -> Member:
@@ -84,6 +72,7 @@ def save_content(user: Member, post: instaloader.Post) -> Feed or None:
 
 
 def save_contents():
+    ins = get_ins()
     members = Member.objects.exclude(instagram_id="").filter(archived=False)
     for member in members:
         instagram_id = int(member.instagram_id)
@@ -119,5 +108,7 @@ def ig_to_weibo(ig: Feed) -> Weibo or None:
 
 
 def convert_username_to_id(username) -> str or None:
+    ins = get_ins()
+
     profile = instaloader.Profile.from_username(ins.context, username)
     return str(profile.userid)
