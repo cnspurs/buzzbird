@@ -10,7 +10,7 @@ from rest_framework.response import Response
 
 from core import utils
 from core import weibo
-from core.instagram_v2 import ins
+from core.instagram_v2 import get_ins
 from core.models import Feed
 from core.serializer import FeedSerializer, QueryUserSerializer
 
@@ -83,6 +83,7 @@ def query_user_id(request):
 
     if type == 'instagram':
         try:
+            ins = get_ins()
             profile = instaloader.Profile.from_username(ins.context, username)
             user_id = str(profile.userid)
             return Response({'type': type, 'user_id': user_id})
