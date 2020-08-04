@@ -85,7 +85,7 @@ def get_image(url):
 
 
 def ig_to_weibo(ig: Feed):
-    text = f'【{ig.user.name} Ins】{ig.title[:120]} ... https://spursnews.net/feeds/{ig.id}'
+    text = f'【{ig.user.name} Ins】{ig.title[:120]} ... {settings.BUZZBIRD_FEED_URL}/{ig.id}'
     media = None
     if ig.media.count() > 0:
         media = ig.media.all()[0]

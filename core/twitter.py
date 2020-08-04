@@ -4,6 +4,7 @@ import logging
 import requests
 from dateutil.parser import parse
 
+from django.conf import settings
 from django.db.models import Q
 from django_q.tasks import async_task
 
@@ -76,7 +77,7 @@ def get_image(url):
 
 
 def twitter_to_weibo(twitter: Feed):
-    text = f"【{twitter.user.name} 推特】{twitter.title[:140]} ... https://spursnews.net/feeds/{twitter.id}"
+    text = f"【{twitter.user.name} 推特】{twitter.title[:140]} ... {settings.BUZZBIRD_FEED_URL}/{twitter.id}"
     media = None
     if twitter.media.count() > 0:
         media = twitter.media.all()[0]
