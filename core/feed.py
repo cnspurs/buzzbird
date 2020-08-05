@@ -11,7 +11,7 @@ logger = logging.getLogger("core.feed")
 
 
 def feed_to_weibo(feed: Feed) -> Weibo or None:
-    text = f'【{feed.user.name} Ins】{feed.title[:120]} ... {settings.BUZZBIRD_FEED_URL}/{feed.id}'
+    text = f'【{feed.user.name} Ins】{feed.title[:140]} {"..." if len(feed.title) > 140 else ""} {settings.BUZZBIRD_FEED_URL}/{feed.id}'
     media = None
     if feed.media.count() > 0:
         media = feed.media.all()[0]
