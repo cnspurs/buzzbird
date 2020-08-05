@@ -4,13 +4,10 @@ import logging
 import requests
 from dateutil.parser import parse
 
-from django.conf import settings
 from django.db.models import Q
 from django_q.tasks import async_task
 
-from core import func
 from core.models import Feed, Member, Media
-from core.schema import Weibo
 from core.utils import Status
 from core.utils import twitter as t
 
@@ -64,10 +61,18 @@ def save_content(user, item: Status):
 
 
 def save_contents():
-    tl = t.get_timeline()
-    for twitter in tl:
-        user = create_user(twitter)
-        save_content(user, twitter)
+    members = Member.objects.exclude(
+        Q(twitter_id='') | Q(twitter_id__isnull=True) | Q(archived=True)
+    )
+    for m in members:
+        kwargs = {}
+        last_feed: Feed = Feed.objects.twitter().filter(user_id=m.id).order_by('-status_id').first()
+        if last_feed:
+            kwargs = {'since_id': last_feed.status_id}
+
+        tl = t.get_user_timelime(m, **kwargs)
+        for twitter in tl:
+            save_content(m, twitter)
 
 
 def get_image(url):
