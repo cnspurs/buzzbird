@@ -42,7 +42,7 @@ class TwitterAPI:
         return user.id_str
 
     def get_user_timelime(self, member: Member, **kwargs):
-        user_timeline = self._api.GetListTimeline(member.twitter_id, **kwargs)
+        user_timeline = self._api.GetUserTimeline(member.twitter_id, **kwargs)
         return [Status(status) for status in user_timeline]
 
 
