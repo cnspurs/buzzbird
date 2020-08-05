@@ -15,7 +15,7 @@ def sync_twitter_to_buzzbird():
     profile = Profile.objects.filter(user__username="5833511420").first()
     qs = (
         Feed.objects.twitter()
-        .filter(is_buzzbird=False)
+        .filter(is_buzzbird=False, is_video=False)
         .prefetch_related("media")
         .order_by("created_at")
     )
@@ -34,7 +34,7 @@ def sync_instagram_v2_to_buzzbird():
     profile = Profile.objects.filter(user__username="5833511420").first()
     qs = (
         Feed.objects.instagram_v2()
-        .filter(is_buzzbird=False)
+        .filter(is_buzzbird=False, is_video=False)
         .prefetch_related("media")
         .order_by("created_at")
     )
