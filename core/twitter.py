@@ -68,7 +68,7 @@ def save_contents():
         kwargs = {}
         last_feed: Feed = Feed.objects.twitter().filter(user_id=m.id).order_by('-status_id').first()
         if last_feed:
-            kwargs = {'since_id': last_feed.status_id}
+            kwargs['since_id'] = int(last_feed.status_id)
 
         tl = t.get_user_timelime(m, **kwargs)
         for twitter in tl:
