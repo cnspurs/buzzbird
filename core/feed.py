@@ -1,4 +1,5 @@
 import logging
+import re
 
 from django.conf import settings
 
@@ -10,6 +11,15 @@ from core.schema import Weibo
 logger = logging.getLogger("core.feed")
 
 
+def text_processing(string):
+    pattern = r'https://t.co(/?\w*)'
+    result = re.sub(pattern, '', string)
+
+    # remove duplicate space
+    result = ' '.join(result.split())
+    return result
+
+
 def feed_to_weibo(feed: Feed) -> Weibo or None:
     mapping = {
         'instagram_v2': 'ins',
@@ -17,6 +27,7 @@ def feed_to_weibo(feed: Feed) -> Weibo or None:
     }
     feed_type = mapping[feed.type]
     text = f'【{feed.user.name} {feed_type}】{feed.title[:140]} {"..." if len(feed.title) > 140 else ""} {settings.BUZZBIRD_FEED_URL}/{feed.id}'
+    text = text_processing(text)
     media = None
     if feed.media.count() > 0:
         media = feed.media.all()[0]
