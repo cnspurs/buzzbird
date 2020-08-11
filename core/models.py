@@ -60,6 +60,7 @@ class Member(models.Model):
     instagram_id = models.CharField(max_length=64, blank=True)
     twitter_id = models.CharField(max_length=128, blank=True)
     weibo_id = models.CharField(max_length=64, blank=True)
+    synced_from = models.DateTimeField(blank=True, null=True)
 
     # archived means will no longer collect his feeds
     archived = models.BooleanField(default=False)
