@@ -60,7 +60,7 @@ def save_content(user, item: Status):
     return twitter
 
 
-def save_contents():
+def save_contents(full_sync=False):
     members = Member.objects.exclude(
         Q(twitter_id='') | Q(twitter_id__isnull=True) | Q(archived=True)
     )
@@ -71,6 +71,13 @@ def save_contents():
             kwargs['since_id'] = int(last_feed.status_id)
 
         tl = t.get_user_timelime(m, **kwargs)
+
+        if not last_feed and full_sync is False:
+            if m.synced_from is not None:
+                tl = [status for status in tl if status.created_at > m.synced_from]
+            else:
+                logger.error(f'ID {m.id}, {m.english_name} should have a sync_from datetime but it doesn\'t.')
+
         for twitter in tl:
             save_content(m, twitter)
 
