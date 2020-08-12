@@ -74,7 +74,7 @@ def save_contents(full_sync=False):
 
         if not last_feed and full_sync is False:
             if m.synced_from is not None:
-                tl = [status for status in tl if status.created_at > m.synced_from]
+                tl = [status for status in tl if parse(status.created_at) > m.synced_from]
             else:
                 logger.error(f'ID {m.id}, {m.english_name} should have a sync_from datetime but it doesn\'t.')
 
