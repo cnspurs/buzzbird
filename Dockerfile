@@ -1,8 +1,8 @@
-FROM python:3.7.6-slim
+FROM python:3.8.13-slim-bullseye
 
-LABEL Name=buzzbird Version=0.1.0
+LABEL Name=buzzbird Version=0.2.0
 
-RUN pip install poetry==1.0.2
+RUN pip install poetry==1.1.12
 RUN poetry config virtualenvs.create false
 COPY poetry.lock pyproject.toml /app/
 WORKDIR /app
