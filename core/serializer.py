@@ -1,6 +1,5 @@
-from rest_framework import serializers
-
 from core.models import Feed, Media, Member
+from rest_framework import serializers
 
 
 class MemberSerializer(serializers.ModelSerializer):
@@ -8,7 +7,7 @@ class MemberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Member
-        exclude = ('avatar',)
+        exclude = ("avatar",)
 
 
 class MediaSerializer(serializers.Serializer):
@@ -17,17 +16,17 @@ class MediaSerializer(serializers.Serializer):
 
     class Meta:
         model = Media
-        fields = ('id', 'url')
+        fields = ("id", "url")
 
 
 class FeedSerializer(serializers.ModelSerializer):
-    media = MediaSerializer(source='downloaded_media', many=True)
+    media = MediaSerializer(source="downloaded_media", many=True)
     user = MemberSerializer()
-    type = serializers.CharField(source='readable_type')
+    type = serializers.CharField(source="readable_type")
 
     class Meta:
         model = Feed
-        exclude = ('metadata', 'is_buzzbird', 'is_discourse', 'author')
+        exclude = ("metadata", "is_buzzbird", "is_discourse", "author")
 
 
 class QueryUserSerializer(serializers.Serializer):
@@ -38,10 +37,10 @@ class QueryUserSerializer(serializers.Serializer):
 
     def validate_type(self, value):
         types = [
-            'instagram',
-            'twitter',
-            'weibo',
+            "instagram",
+            "twitter",
+            "weibo",
         ]
         if value not in types:
-            raise serializers.ValidationError('Invalid type')
+            raise serializers.ValidationError("Invalid type")
         return value

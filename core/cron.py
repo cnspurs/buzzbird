@@ -3,8 +3,7 @@ import random
 import time
 
 import core.feed
-from core.models import Profile, Feed
-
+from core.models import Feed, Profile
 from django.conf import settings
 
 logger = logging.getLogger("core.cron")

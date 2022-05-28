@@ -1,19 +1,16 @@
 import logging
 import os
-
-import requests
-
 from urllib.parse import urlparse
 
+import requests
+from core import func
 from django.conf import settings
-from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
+from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
-
-from core import func
 
 logger = logging.getLogger("core.models")
 
@@ -97,7 +94,7 @@ class Feed(models.Model):
     is_buzzbird = models.BooleanField("Published to buzzbird Weibo?", default=False)
     is_discourse = models.BooleanField("Published to discourse?", default=False)
     is_video = models.BooleanField(default=False)
-    link = models.URLField(db_index=True, blank=True, default='')
+    link = models.URLField(db_index=True, blank=True, default="")
     created_at = models.DateTimeField(db_index=True)
     title = models.CharField(blank=True, max_length=1024)
     user = models.ForeignKey(
@@ -109,13 +106,13 @@ class Feed(models.Model):
     )
     type = models.CharField(max_length=16, choices=FEED_TYPES)
     metadata = JSONField(blank=True, default=dict)
-    status_id = models.CharField(max_length=128, blank=True, db_index=True, default='')
+    status_id = models.CharField(max_length=128, blank=True, db_index=True, default="")
 
     objects = FeedManager()
 
     @property
     def downloaded_media(self):
-        return self.media.exclude(filename='')
+        return self.media.exclude(filename="")
 
     @property
     def readable_type(self):

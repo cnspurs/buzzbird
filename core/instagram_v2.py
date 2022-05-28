@@ -1,13 +1,10 @@
 import logging
 
 import instaloader
+from core.models import Feed, Media, Member
 from django.conf import settings
 from django.utils import timezone
 from django_q.tasks import async_task
-
-from core import func
-from core.models import Feed, Member, Media
-from core.schema import Weibo
 
 logger = logging.getLogger("core.instagram_v2")
 

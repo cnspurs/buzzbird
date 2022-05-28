@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+
 from core.oauth_weibo import OAuthWeibo
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -20,76 +21,74 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-if os.getenv('DEBUG') == 'on':
+if os.getenv("DEBUG") == "on":
     DEBUG = True
 
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 if DEBUG:
-    ALLOWED_HOSTS += ['127.0.0.1']
+    ALLOWED_HOSTS += ["127.0.0.1"]
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'django_q',
-    'core',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "rest_framework",
+    "django_q",
+    "core",
 ]
 
 if not DEBUG:
     REST_FRAMEWORK = {
-        'DEFAULT_RENDERER_CLASSES': (
-            'rest_framework.renderers.JSONRenderer',
-        )
+        "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",)
     }
 
 Q_CLUSTER = {
-    'name': 'DjangORM',
-    'workers': 8,
-    'retry': 600,
-    'orm': 'default',
-    'ack_failures': True,
+    "name": "DjangORM",
+    "workers": 8,
+    "retry": 600,
+    "orm": "default",
+    "ack_failures": True,
 }
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'rollbar.contrib.django.middleware.RollbarNotifierMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "rollbar.contrib.django.middleware.RollbarNotifierMiddleware",
 ]
 
-ROOT_URLCONF = 'buzzbird.urls'
+ROOT_URLCONF = "buzzbird.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'buzzbird.wsgi.application'
+WSGI_APPLICATION = "buzzbird.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
@@ -102,13 +101,13 @@ WSGI_APPLICATION = 'buzzbird.wsgi.application'
 # }
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DATABASE_DBNAME'),
-        'USER': os.getenv('DATABASE_USERNAME'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-        'HOST': os.getenv('DATABASE_HOSTNAME'),
-        'PORT': os.getenv('DATABASE_PORT'),
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DATABASE_DBNAME"),
+        "USER": os.getenv("DATABASE_USERNAME"),
+        "PASSWORD": os.getenv("DATABASE_PASSWORD"),
+        "HOST": os.getenv("DATABASE_HOSTNAME"),
+        "PORT": os.getenv("DATABASE_PORT"),
     }
 }
 
@@ -117,92 +116,99 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'default': {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "default": {
             # 'format': '{asctime} {levelname} {name}.{funcName} {message}',
-            'format': '%(asctime)s %(levelname)s [%(name)s:%(lineno)s] %(module)s %(process)d %(thread)d %(message)s',
+            "format": "%(asctime)s %(levelname)s [%(name)s:%(lineno)s] %(module)s %(process)d %(thread)d %(message)s",
             # 'style': '{',
         },
     },
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse',
+    "filters": {
+        "require_debug_false": {
+            "()": "django.utils.log.RequireDebugFalse",
         },
     },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'default'
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "default",
         },
-        'rollbar': {
-            'filters': ['require_debug_false'],
-            'access_token': os.getenv('ROLLBAR_ACCESS_TOKEN'),
-            'environment': 'production',
-            'class': 'rollbar.logger.RollbarHandler',
-            'level': 'ERROR',
+        "rollbar": {
+            "filters": ["require_debug_false"],
+            "access_token": os.getenv("ROLLBAR_ACCESS_TOKEN"),
+            "environment": "production",
+            "class": "rollbar.logger.RollbarHandler",
+            "level": "ERROR",
         },
-        'info_file': {
-            'level': 'INFO',
-            'class': 'logging.handlers.WatchedFileHandler',
-            'formatter': 'default',
-            'filename': os.path.join(os.getcwd(), 'logs', 'django', 'info.log')
+        "info_file": {
+            "level": "INFO",
+            "class": "logging.handlers.WatchedFileHandler",
+            "formatter": "default",
+            "filename": os.path.join(os.getcwd(), "logs", "django", "info.log"),
         },
-        'warning_file': {
-            'level': 'WARNING',
-            'class': 'logging.handlers.WatchedFileHandler',
-            'formatter': 'default',
-            'filename': os.path.join(os.getcwd(), 'logs', 'django', 'warning.log')
+        "warning_file": {
+            "level": "WARNING",
+            "class": "logging.handlers.WatchedFileHandler",
+            "formatter": "default",
+            "filename": os.path.join(os.getcwd(), "logs", "django", "warning.log"),
         },
-        'error_file': {
-            'level': 'ERROR',
-            'class': 'logging.handlers.WatchedFileHandler',
-            'formatter': 'default',
-            'filename': os.path.join(os.getcwd(), 'logs', 'django', 'error.log')
+        "error_file": {
+            "level": "ERROR",
+            "class": "logging.handlers.WatchedFileHandler",
+            "formatter": "default",
+            "filename": os.path.join(os.getcwd(), "logs", "django", "error.log"),
         },
-        'critical_file': {
-            'level': 'CRITICAL',
-            'class': 'logging.handlers.WatchedFileHandler',
-            'formatter': 'default',
-            'filename': os.path.join(os.getcwd(), 'logs', 'django', 'critical.log')
+        "critical_file": {
+            "level": "CRITICAL",
+            "class": "logging.handlers.WatchedFileHandler",
+            "formatter": "default",
+            "filename": os.path.join(os.getcwd(), "logs", "django", "critical.log"),
         },
-        'debug_file': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.WatchedFileHandler',
-            'formatter': 'default',
-            'filename': os.path.join(os.getcwd(), 'logs', 'django', 'debug.log')
+        "debug_file": {
+            "level": "DEBUG",
+            "class": "logging.handlers.WatchedFileHandler",
+            "formatter": "default",
+            "filename": os.path.join(os.getcwd(), "logs", "django", "debug.log"),
         },
     },
-    'loggers': {
-        'core': {
-            'handlers': ['info_file', 'warning_file', 'error_file', 'critical_file', 'debug_file', 'rollbar'],
-            'level': 'DEBUG',
+    "loggers": {
+        "core": {
+            "handlers": [
+                "info_file",
+                "warning_file",
+                "error_file",
+                "critical_file",
+                "debug_file",
+                "rollbar",
+            ],
+            "level": "DEBUG",
         },
-    }
+    },
 }
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -213,30 +219,30 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-MEDIA_ROOT = os.path.join(STATIC_ROOT, 'media')
-CDN_URL = 'https://static.spursnews.net/'
-MEDIA_URL = CDN_URL + 'media/'
-BUZZBIRD_FEED_URL = os.getenv('BUZZBIRD_FEED_URL', 'https://feeds.spursnews.net')
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+MEDIA_ROOT = os.path.join(STATIC_ROOT, "media")
+CDN_URL = "https://static.spursnews.net/"
+MEDIA_URL = CDN_URL + "media/"
+BUZZBIRD_FEED_URL = os.getenv("BUZZBIRD_FEED_URL", "https://feeds.spursnews.net")
 
-weibo_app_id = os.getenv('WEIBO_APP_ID')
-weibo_app_secret = os.getenv('WEIBO_APP_SECRET')
-weibo_redirect_uri = os.getenv('WEIBO_REDIRECT_URI')
+weibo_app_id = os.getenv("WEIBO_APP_ID")
+weibo_app_secret = os.getenv("WEIBO_APP_SECRET")
+weibo_redirect_uri = os.getenv("WEIBO_REDIRECT_URI")
 WEIBO = OAuthWeibo(weibo_app_id, weibo_app_secret, weibo_redirect_uri)
-WEIBO_BUZZBIRD_ID = os.getenv('WEIBO_BUZZBIRD_ID', '')
+WEIBO_BUZZBIRD_ID = os.getenv("WEIBO_BUZZBIRD_ID", "")
 
 ROLLBAR = {
-    'access_token': os.getenv('ROLLBAR_ACCESS_TOKEN'),
-    'environment': 'development' if DEBUG else 'production',
-    'root': BASE_DIR,
+    "access_token": os.getenv("ROLLBAR_ACCESS_TOKEN"),
+    "environment": "development" if DEBUG else "production",
+    "root": BASE_DIR,
 }
 
-FETCHRSS_API_KEY = os.getenv('FETCHRSS_API_KEY', 'xxx')
+FETCHRSS_API_KEY = os.getenv("FETCHRSS_API_KEY", "xxx")
 
-DISCOURSE_API_KEY = os.getenv('DISCOURSE_API_KEY', 'xxx')
+DISCOURSE_API_KEY = os.getenv("DISCOURSE_API_KEY", "xxx")
 
 # Instagram V2
-INSTAGRAM_NAME = os.getenv('INSTAGRAM_USERNAME', 'xxx')
-INSTAGRAM_PASSWORD = os.getenv('INSTAGRAM_PASSWORD', 'xxx')
-INSTAGRAM_SESSION_DIR = os.path.join(BASE_DIR, 'sessions')
+INSTAGRAM_NAME = os.getenv("INSTAGRAM_USERNAME", "xxx")
+INSTAGRAM_PASSWORD = os.getenv("INSTAGRAM_PASSWORD", "xxx")
+INSTAGRAM_SESSION_DIR = os.path.join(BASE_DIR, "sessions")

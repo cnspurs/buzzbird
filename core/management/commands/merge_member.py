@@ -1,6 +1,5 @@
+from core.models import Feed, Member
 from django.core.management.base import BaseCommand
-
-from core.models import *
 
 
 class Command(BaseCommand):
@@ -10,13 +9,13 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '-s', '--source', type=int, help='Member that will be merged and deleted'
+            "-s", "--source", type=int, help="Member that will be merged and deleted"
         )
-        parser.add_argument('-t', '--target', type=int)
+        parser.add_argument("-t", "--target", type=int)
 
     def handle(self, *args, **kwargs):
-        source = kwargs['source']
-        target = kwargs['target']
+        source = kwargs["source"]
+        target = kwargs["target"]
 
         source_user = Member.objects.filter(id=source).first()
         target_user = Member.objects.filter(id=target).first()
@@ -35,4 +34,4 @@ class Command(BaseCommand):
             source_user.delete()
 
         else:
-            self.stdout.write(self.style.ERROR('source or target does not exist!'))
+            self.stdout.write(self.style.ERROR("source or target does not exist!"))

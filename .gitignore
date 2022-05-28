@@ -11,3 +11,7 @@ __pycache__/
 article_images/
 dump.rdb
 .python-version
+
+!sessions/
+!static/
+!logs/

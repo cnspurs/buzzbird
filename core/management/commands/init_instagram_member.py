@@ -1,41 +1,42 @@
 import instaloader
-
+from core import instagram_v2
+from core.models import Media, Member
 from django.core.management.base import BaseCommand
 from django_q.tasks import async_task
 
-from core import instagram_v2
-from core.models import Member, Media
-
-ins_list = ['llorente_fer',
-            'ndombele_22',
-            'daosanchez13',
-            'spursofficial',
-            'vincentjanssenofficial',
-            'eriklamela',
-            'gazzanigapaulo',
-            'hm_son7',
-            'harrykane',
-            'jrclarke_',
-            'ericdier15',
-            'jvertonghen',
-            'victorwanyama',
-            'moussasissokoofficiel',
-            'sergeaurier',
-            'bendavies33',
-            'tobyalderweireld',
-            'lucasmoura7',
-            'ktrippier2',
-            'harrywinks',]
+ins_list = [
+    "llorente_fer",
+    "ndombele_22",
+    "daosanchez13",
+    "spursofficial",
+    "vincentjanssenofficial",
+    "eriklamela",
+    "gazzanigapaulo",
+    "hm_son7",
+    "harrykane",
+    "jrclarke_",
+    "ericdier15",
+    "jvertonghen",
+    "victorwanyama",
+    "moussasissokoofficiel",
+    "sergeaurier",
+    "bendavies33",
+    "tobyalderweireld",
+    "lucasmoura7",
+    "ktrippier2",
+    "harrywinks",
+]
 
 
 class Command(BaseCommand):
-
     def handle(self, *args, **options):
         d = {}
 
         for username in ins_list:
             try:
-                profile = instaloader.Profile.from_username(instagram_v2.ins.context, username)
+                profile = instaloader.Profile.from_username(
+                    instagram_v2.ins.context, username
+                )
                 d[profile.full_name] = (profile.userid, profile.profile_pic_url)
             except Exception as e:
                 self.stderr.write(e)
@@ -52,5 +53,6 @@ class Command(BaseCommand):
                     m.save()
                     async_task(media.download_to_local)
 
-                self.stdout.write(f'{m.english_name} with instagram_id {m.instagram_id}')
-
+                self.stdout.write(
+                    f"{m.english_name} with instagram_id {m.instagram_id}"
+                )

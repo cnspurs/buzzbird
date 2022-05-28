@@ -2,16 +2,13 @@ import io
 import logging
 
 import requests
-from dateutil.parser import parse
-
-from django.db.models import Q
-from django_q.tasks import async_task
-
-from twitter.error import TwitterError
-
-from core.models import Feed, Member, Media
+from core.models import Feed, Media, Member
 from core.utils import Status
 from core.utils import twitter as t
+from dateutil.parser import parse
+from django.db.models import Q
+from django_q.tasks import async_task
+from twitter.error import TwitterError
 
 logger = logging.getLogger("core.twitter")
 
@@ -64,22 +61,30 @@ def save_content(user, item: Status):
 
 def save_contents(full_sync=False):
     members = Member.objects.exclude(
-        Q(twitter_id='') | Q(twitter_id__isnull=True) | Q(archived=True)
+        Q(twitter_id="") | Q(twitter_id__isnull=True) | Q(archived=True)
     )
     for m in members:
         kwargs = {}
-        last_feed: Feed = Feed.objects.twitter().filter(user_id=m.id).order_by('-status_id').first()
+        last_feed: Feed = (
+            Feed.objects.twitter().filter(user_id=m.id).order_by("-status_id").first()
+        )
         if last_feed:
-            kwargs['since_id'] = int(last_feed.status_id)
+            kwargs["since_id"] = int(last_feed.status_id)
         logger.debug("Twitter: Ready to fetch tweets for {}".format(m.english_name))
         try:
             tl = t.get_user_timelime(m, **kwargs)
 
             if not last_feed and full_sync is False:
                 if m.synced_from is not None:
-                    tl = [status for status in tl if parse(status.created_at) > m.synced_from]
+                    tl = [
+                        status
+                        for status in tl
+                        if parse(status.created_at) > m.synced_from
+                    ]
                 else:
-                    logger.error(f'ID {m.id}, {m.english_name} should have a sync_from datetime but it doesn\'t.')
+                    logger.error(
+                        f"ID {m.id}, {m.english_name} should have a sync_from datetime but it doesn't."
+                    )
 
             for twitter in tl:
                 save_content(m, twitter)

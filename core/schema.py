@@ -1,5 +1,6 @@
-from io import BytesIO
 from dataclasses import dataclass
+from io import BytesIO
+
 
 @dataclass
 class Weibo:

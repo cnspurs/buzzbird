@@ -4,18 +4,16 @@ from io import BytesIO
 
 import requests
 import twitter as t
-
-from django.conf import settings
-
 from core.models import Member, Profile
 from core.schema import Weibo
+from django.conf import settings
 
-logger = logging.getLogger('core.utils')
+logger = logging.getLogger("core.utils")
 
-CONSUMER_KEY = os.getenv('TWITTER_CONSUMER_KEY')
-CONSUMER_SECRET = os.getenv('TWITTER_CONSUMER_SECRET')
-ACCESS_TOKEN_KEY = os.getenv('TWITTER_ACCESS_TOKEN_KEY')
-ACCESS_TOKEN_SECRET = os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
+CONSUMER_KEY = os.getenv("TWITTER_CONSUMER_KEY")
+CONSUMER_SECRET = os.getenv("TWITTER_CONSUMER_SECRET")
+ACCESS_TOKEN_KEY = os.getenv("TWITTER_ACCESS_TOKEN_KEY")
+ACCESS_TOKEN_SECRET = os.getenv("TWITTER_ACCESS_TOKEN_SECRET")
 
 
 def get_weibo_access_token() -> str:
@@ -24,8 +22,21 @@ def get_weibo_access_token() -> str:
 
 
 class TwitterAPI:
-    def __init__(self, consumer_key, consumer_secret, access_token_key, access_token_secret, **kwargs):
-        self._api = t.Api(consumer_key, consumer_secret, access_token_key, access_token_secret, **kwargs)
+    def __init__(
+        self,
+        consumer_key,
+        consumer_secret,
+        access_token_key,
+        access_token_secret,
+        **kwargs,
+    ):
+        self._api = t.Api(
+            consumer_key,
+            consumer_secret,
+            access_token_key,
+            access_token_secret,
+            **kwargs,
+        )
 
     def get_timeline(self, list_id=77158478, **kwargs) -> list:
         timeline = self._api.GetListTimeline(list_id, **kwargs)
@@ -47,7 +58,6 @@ class TwitterAPI:
 
 
 class Status:
-
     def __init__(self, status: t.models.Status):
         self._status = status
 
@@ -60,36 +70,42 @@ class Status:
     def to_weibo(self):
         # 原创和转推，text 格式不一样
         if self.retweet is None:
-            text = f'【{self.screen_name} 推特】{self.text}'
+            text = f"【{self.screen_name} 推特】{self.text}"
             image = self.first_image()
         else:
             # text = f'【{self.screen_name} 推特】{self.text} RT @{self.retweeted_status._status.user.screen_name} {self.retweeted_status.text}'
             # image = self.first_image(retweet=True)
             return None
 
-        text = text if len(text) < 140 else text[:125] + '...' + 'https://t.co/diu'
-        if 'https://t.co' not in text:
-            text += ' https://t.co/diu'
+        text = text if len(text) < 140 else text[:125] + "..." + "https://t.co/diu"
+        if "https://t.co" not in text:
+            text += " https://t.co/diu"
         data = {
-            'text': text,
-            'pic': image,
-            'tweet_id': self.tweet_id,
+            "text": text,
+            "pic": image,
+            "tweet_id": self.tweet_id,
         }
 
-        logger.info(f'text: {text}, image: {True if image else False}, tweet_id: {self.tweet_id}')
+        logger.info(
+            f"text: {text}, image: {True if image else False}, tweet_id: {self.tweet_id}"
+        )
         return Weibo(**data)
 
     @property
     def screen_name(self):
         try:
-            twitter_member: Member = Member.objects.filter(twitter_id=self.twitter_user_id, type='twitter').first()
+            twitter_member: Member = Member.objects.filter(
+                twitter_id=self.twitter_user_id, type="twitter"
+            ).first()
 
             if twitter_member:
                 if twitter_member.chinese_name is not None:
                     return twitter_member.chinese_name
                 return self.username
 
-            Member.objects.create(twitter_id=self.twitter_user_id, english_name=self.username)
+            Member.objects.create(
+                twitter_id=self.twitter_user_id, english_name=self.username
+            )
             return self.username
         except Exception:
             return self.username
@@ -99,7 +115,7 @@ class Status:
         return self._status.full_text
 
     def first_image(self, retweet=False):
-        image_url = ''
+        image_url = ""
 
         if retweet is False:
             if self._status.media is None:
@@ -168,8 +184,8 @@ class Status:
     @property
     def link(self):
         if self._status.media is None:
-            return ''
-        return self._status.media[0].url or ''  # if None it will return empty string
+            return ""
+        return self._status.media[0].url or ""  # if None it will return empty string
 
     @property
     def author(self):
@@ -186,15 +202,25 @@ class Status:
         return self._status._json
 
 
-twitter = TwitterAPI(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET, tweet_mode='extended')
+twitter = TwitterAPI(
+    CONSUMER_KEY,
+    CONSUMER_SECRET,
+    ACCESS_TOKEN_KEY,
+    ACCESS_TOKEN_SECRET,
+    tweet_mode="extended",
+)
 
 
-def requests_get(url: str, params: dict = None, **kwargs) -> requests.models.Response or None:
-    if 'headers' not in kwargs or type(kwargs['headers']) is not dict:
-        kwargs['headers'] = {}
-    kwargs['headers']['user-agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' \
-                                      'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'
-    kwargs['timeout'] = 10
+def requests_get(
+    url: str, params: dict = None, **kwargs
+) -> requests.models.Response or None:
+    if "headers" not in kwargs or type(kwargs["headers"]) is not dict:
+        kwargs["headers"] = {}
+    kwargs["headers"]["user-agent"] = (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36"
+    )
+    kwargs["timeout"] = 10
 
     try:
         r = requests.get(url, params, **kwargs)
